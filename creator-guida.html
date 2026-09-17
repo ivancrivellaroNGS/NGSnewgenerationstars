@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGS — Creator Official Master Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-radial: radial-gradient(circle at center, #730019 0%, #120002 100%);
+            --card-bg-1: #240005;
+            --card-bg-2: #330009;
+            --card-bg-3: #3b000b;
+            --neon-red: #ff0033;
+            --neon-glow: 0 0 15px rgba(255, 0, 51, 0.4);
+            --neon-glow-strong: 0 0 25px rgba(255, 0, 51, 0.8);
+            --text-glow: 0 0 10px #ff0033;
+            --font-main: 'Montserrat', sans-serif;
+            --font-title: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-radial);
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: var(--font-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        .page-wrapper {
+            position: relative;
+            padding: 50px 20px 80px 20px;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* BACK NAVIGATION */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            margin-bottom: 40px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 8px 18px;
+            background: var(--card-bg-1);
+            border: 1px solid rgba(255, 0, 51, 0.4);
+            border-radius: 50px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--neon-red);
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            transform: translateX(-3px);
+        }
+
+        /* HEADER */
+        .guide-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .guide-subtitle-top {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--neon-red);
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: var(--text-glow);
+        }
+
+        .guide-title {
+            font-family: var(--font-title);
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .guide-title span {
+            color: var(--neon-red);
+            text-shadow: var(--text-glow);
+        }
+
+        .guide-intro {
+            color: #e0e0e0;
+            font-size: 1.15rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* GRID & CARDS */
+        .guide-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .guide-card {
+            background: var(--card-bg-1);
+            border: 1px solid rgba(255, 0, 51, 0.35);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .guide-card:hover {
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            transform: translateY(-4px);
+        }
+
+        .guide-card h3 {
+            font-family: var(--font-title);
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 0, 51, 0.3);
+            padding-bottom: 12px;
+        }
+
+        .guide-card h3 span {
+            color: var(--neon-red);
+        }
+
+        .guide-card p {
+            color: #cccccc;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .guide-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-card ul {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .guide-card li {
+            color: #dddddd;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 22px;
+        }
+
+        .guide-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--neon-red);
+            font-weight: bold;
+        }
+
+        .guide-card strong {
+            color: #ffffff;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, var(--card-bg-3) 0%, var(--card-bg-1) 100%);
+            border: 1px solid var(--neon-red);
+            border-radius: 20px;
+            padding: 60px 30px;
+            box-shadow: var(--neon-glow-strong);
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-title);
+            font-size: 2.4rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            color: #cccccc;
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+        }
+
+        .btn-creator {
+            display: inline-block;
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid var(--neon-red);
+            padding: 16px 45px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .btn-creator:hover {
+            background: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 0, 51, 0.15);
+            color: #777777;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="container">
+            <a href="scelta.html" class="nav-back">&larr; Back to Selection</a>
+            
+            <div class="guide-header">
+                <div class="guide-subtitle-top">New Generation Stars</div>
+                <h1 class="guide-title">Creator Complete <span>Operational Guide</span></h1>
+                <p class="guide-intro">The official rules, operational standards, and elite framework for creators within the NGS ecosystem.</p>
+            </div>
+
+            <div class="guide-grid">
+                
+                <div class="guide-card">
+                    <h3>1. Closed Club & Programmed Scarcity</h3>
+                    <p>NGS is an elite digital ecosystem structured on a strictly guarded perimeter of exactly <strong>5,000 active slots</strong> for creators. This programmed scarcity eliminates the confusion, noise, and dispersion typical of generalist social platforms, enhancing brand exclusivity and targeting an audience with an extremely high spending capacity.</p>
+                    <p>Once the initial threshold of 5,000 slots is completely full, the platform will not open its doors indiscriminately, but will activate a strictly controlled expansion, allowing access only through the gradual opening of subsequent blocks of <strong>1,000 slots</strong> each.</p>
+                    <p>Regarding access, the only mandatory requirement—free of subjective moral judgments, moralism, or behavioral filters—is legal adulthood, rigorously verified.</p>
+                </div>
+
+                <div class="guide-card">
+                    <h3>2. Dollar-Generated Volumes & Scalability (70% to 75%)</h3>
+                    <p>Climbing the rankings and increasing earnings depend entirely on the total dollar volumes generated overall by the creator within the platform.</p>
+                    <p>All creators start from a solid foundation that grants them <strong>70%</strong> of all net revenues collected.</p>
+                    <p>The more dollars you manage to generate through subscriptions, video calls, and sales, the higher you climb in the revenue ranking:</p>
+                    <ul>
+                        <li>Profiles reaching the high bracket (from position 4,800 to 4,900) obtain <strong>72.5%</strong>.</li>
+                        <li>The absolute elite summit (from position 4,900 to 5,000, the top 100 positions moving the highest dollar volumes) unlocks the maximum percentage of <strong>75%</strong> of earnings.</li>
+                    </ul>
+                </div>
+
+                <div class="guide-card">
+                    <h3>3. Private Video Calls at $200 (Max 1-Hour Duration)</h3>
+                    <p>Any user, even without an active monthly subscription, can book a private video call with the creator.</p>
+                    <p>The session has a fixed cost of <strong>$200</strong> per single call, ensuring immediate and high earnings in dollars.</p>
+                    <ul>
+                        <li><strong>Duration Limit:</strong> Each private video session has a strict maximum duration of <strong>one hour</strong>, after which the call concludes automatically to protect the creator's time and schedule.</li>
+                        <li>To protect the creator's time and privacy, every call must be obligatorily booked, managed, and synchronized through the platform's proprietary integrated calendar.</li>
+                        <li>For supporters who choose superior subscription packages ($300 or $500 per month), these video calls are already included in the price.</li>
+                    </ul>
+                </div>
+
+                <div class="guide-card">
+                    <h3>4. Subscription Packages & Creator Obligations</h3>
+                    <p>Recurring financial flows are regulated by precise monthly price packages, to which specular operational duties correspond:</p>
+                    <ul>
+                        <li><strong>Base Package ($50/mo):</strong> The fan pays $50 for access to the exclusive feed and ordinary chat. The creator has the obligation of regular publications and professional, timely messaging management.</li>
+                        <li><strong>Intermediate Package ($100/mo):</strong> The fan pays $100 to access high-definition photo sets and uncut extended videos. The creator must release dedicated unreleased content monthly.</li>
+                        <li><strong>Advanced Package ($300/mo):</strong> Includes advanced digital content and access to interactive video sessions via calendar. The creator guarantees an elite level of attention and care.</li>
+                        <li><strong>Superior Elite Package ($500/mo):</strong> The maximum spending level. The fan pays $500 for an unlimited experience, absolute priority chat, and included video calls. The creator has the obligation of immediate responses and a personalized luxury rapport.</li>
+                    </ul>
+                </div>
+
+                <div class="guide-card">
+                    <h3>5. Total Protection: Complete Screenshot Block</h3>
+                    <p>To guarantee maximum security, privacy, and peace of mind for the creator, the platform ensures that <strong>no subscriber can in any way take screenshots or screen recordings</strong>. This total technological block is active, strict, and uncompromisable during private video calls, as well as inside chats, messages, and published photographs.</p>
+                </div>
+
+                <div class="guide-card">
+                    <h3>6. Timed Pay-Per-View Content</h3>
+                    <p>The creator can publish exclusive photographs or videos keeping them blurred and protected on their profile, setting a custom dollar unlock price of their choice.</p>
+                    <p>Visitors who want to view the content immediately pay the requested amount, generating instant extra money volumes.</p>
+                    <ul>
+                        <li><strong>The 7-Day Expiration Rule:</strong> Exactly one week later, the lock drops automatically and the content re-enters the normal flow visible to everyone in the feed.</li>
+                        <li><strong>The Privilege for $300 and $500 Packages:</strong> Supporters who invest significant amounts in the high tiers view everything for free or already included, without having to shell out extra dollars for Pay-per-view content.</li>
+                    </ul>
+                </div>
+
+                <div class="guide-card">
+                    <h3>7. Autonomous Promotion & Social Media Banners</h3>
+                    <p>Beyond marketing campaigns and global ads managed directly by the platform on Instagram, Facebook, and TikTok, economic success also depends on active promotion by the talent.</p>
+                    <p><strong>How it works:</strong> The creator must actively publish and sponsor their presence on NGS within their personal social channels, inviting their community to follow them on the platform.</p>
+                    <p><strong>Banners and Dedicated Tools:</strong> To facilitate this conversion, NGS provides creators with dedicated graphic banners, direct links, and promotional kits to share on their social profiles, so followers can easily subscribe and guarantee the creator an immediate, massive flow of dollars.</p>
+                </div>
+
+                <div class="guide-card">
+                    <h3>8. Brand Sponsorships, Publishing Houses & External Contracts</h3>
+                    <p>NGS operates as an exclusive representation agency and talent incubator.</p>
+                    <p>Any commercial proposal, sponsorship agreement, or advertising campaign originating from external brands, publishing houses, or companies must obligatorily pass through the platform's managerial management.</p>
+                    <p>A transparent <strong>10% retention fee</strong> is applied to these external contracts.</p>
+                    <p>Attempts at circumvention, "under-the-table" agreements, or parallel negotiations outside the app result in immediate financial penalties and the permanent revocation of creator status.</p>
+                </div>
+
+            </div>
+
+            <!-- CTA SECTION -->
+            <div class="cta-section">
+                <h2>Ready to Join the Elite?</h2>
+                <p>Secure your position inside the 5,000 exclusive creator slots of NGS.</p>
+                <a href="creator-iscrizione.html" class="btn-creator">I Want to Become a Creator</a>
+            </div>
+
+            <footer>
+                <p>&copy; 2026 NGS (New Generation Stars). All Rights Reserved. Elite Fashion & Creator Ecosystem.</p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

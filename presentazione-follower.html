@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGS — Member Guide & Presentation | New Generation Stars</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-radial: radial-gradient(circle at center, #730019 0%, #120002 100%);
+            --card-bg-1: #240005;
+            --card-bg-2: #330009;
+            --card-bg-3: #3b000b;
+            --neon-red: #ff0033;
+            --neon-green: #00ff66;
+            --neon-glow: 0 0 15px rgba(255, 0, 51, 0.4);
+            --neon-glow-strong: 0 0 25px rgba(255, 0, 51, 0.8);
+            --green-glow: 0 0 15px rgba(0, 255, 102, 0.4);
+            --text-glow: 0 0 10px #ff0033;
+            --font-main: 'Montserrat', sans-serif;
+            --font-title: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-radial);
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: var(--font-main);
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        .page-wrapper {
+            position: relative;
+            padding: 50px 20px 80px 20px;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 8px 18px;
+            background: var(--card-bg-1);
+            border: 1px solid rgba(255, 0, 51, 0.4);
+            border-radius: 50px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--neon-red);
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            transform: translateX(-3px);
+        }
+
+        .badge-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge-item {
+            background: var(--card-bg-1);
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: var(--neon-glow);
+            text-transform: uppercase;
+        }
+
+        /* HEADER */
+        .guide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .guide-subtitle-top {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--neon-red);
+            margin-bottom: 12px;
+            font-weight: 800;
+            text-shadow: var(--text-glow);
+        }
+
+        .guide-title {
+            font-family: var(--font-title);
+            font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .guide-title span {
+            color: var(--neon-red);
+            text-shadow: var(--text-glow);
+        }
+
+        .guide-intro {
+            color: #cccccc;
+            font-size: 1.05rem;
+            font-weight: 300;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* GUIDE CARDS CONTAINER */
+        .guide-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .guide-card {
+            background: var(--card-bg-1);
+            border: 1px solid rgba(255, 0, 51, 0.35);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .guide-card:hover {
+            border-color: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            transform: translateY(-3px);
+        }
+
+        .guide-card h3 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 0, 51, 0.25);
+            padding-bottom: 10px;
+        }
+
+        .guide-card h3 span {
+            color: var(--neon-red);
+        }
+
+        .guide-card p {
+            color: #cccccc;
+            font-size: 0.98rem;
+            margin-bottom: 12px;
+        }
+
+        .guide-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-card ul {
+            margin: 15px 0;
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .guide-card li {
+            color: #dddddd;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .guide-card li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--neon-red);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .guide-card strong {
+            color: #ffffff;
+        }
+
+        /* STATUS EXAMPLES IN CARD */
+        .status-example {
+            display: flex;
+            gap: 12px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .status-tag.online {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: var(--green-glow);
+        }
+
+        .status-tag.offline {
+            background: rgba(255, 0, 51, 0.1);
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            box-shadow: var(--neon-glow);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-tag.online .dot {
+            background: var(--neon-green);
+            box-shadow: 0 0 6px var(--neon-green);
+        }
+
+        .status-tag.offline .dot {
+            background: var(--neon-red);
+            box-shadow: 0 0 6px var(--neon-red);
+        }
+
+        /* CTA BOX */
+        .cta-box {
+            text-align: center;
+            background: linear-gradient(135deg, var(--card-bg-3) 0%, var(--card-bg-1) 100%);
+            border: 1px solid var(--neon-red);
+            border-radius: 20px;
+            padding: 50px 30px;
+            box-shadow: var(--neon-glow-strong);
+        }
+
+        .cta-box h2 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .cta-box p {
+            color: #cccccc;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        .btn-action {
+            display: inline-block;
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid var(--neon-red);
+            padding: 16px 40px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--neon-red);
+            box-shadow: var(--neon-glow-strong);
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 0, 51, 0.15);
+            color: #777777;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+            .guide-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="container">
+            
+            <div class="top-bar">
+                <!-- COLLEGATO DIRETTAMENTE ALLA PAGINA DI SCELTA CORRETTA -->
+                <a href="scelta.html" class="nav-back">&larr; Back to Selection</a>
+                <div class="badge-bar">
+                    <span class="badge-item">18+ Adults Only</span>
+                    <span class="badge-item">Private Club</span>
+                    <span class="badge-item">Stripe Secured</span>
+                </div>
+            </div>
+
+            <div class="guide-header">
+                <div class="guide-subtitle-top">New Generation Stars</div>
+                <h1 class="guide-title">Member Guide & <span>Presentation</span></h1>
+                <p class="guide-intro">Welcome to the most exclusive digital ecosystem where glamour, fashion culture, and luxury entertainment merge into direct, authentic, and unedited interaction.</p>
+            </div>
+
+            <div class="guide-content">
+                
+                <!-- SECTION 1 -->
+                <div class="guide-card">
+                    <h3>1. Discovery Wall & Exclusive Creator Slots</h3>
+                    <p>Inside our private ecosystem, you gain access to the <strong>Discovery Wall</strong>, the elite showcase populated by the most sought-after creators and stars of the moment. To preserve the club's absolute value, global access starts at an initial perimeter capped at just <strong>5,000 active creator slots</strong>.</p>
+                    <p><em>Expansion Mechanism:</em> Once the initial 5,000 slots are filled, the platform progressively unlocks <strong>additional blocks of 1,000 creators at a time</strong> (expanding the limit to 6,000, 7,000 stars, and beyond). This guarantees constant scarcity while allowing the platform to continually welcome new flows of creators and fresh talent for you to discover.</p>
+                </div>
+
+                <!-- SECTION 2 -->
+                <div class="guide-card">
+                    <h3>2. Your Personal Bacheca (Up to 50 Favorite Stars)</h3>
+                    <p>Within your personal dashboard, you can use custom checkmarks to select and pin <strong>up to a maximum of 50 favorite stars of your absolute interest</strong> onto your bacheca.</p>
+                    <p>This keeps your preferred creators organized and under control, allowing you to monitor their activity, evaluate their profiles at your own pace, and decide the exact moment to subscribe and engage.</p>
+                </div>
+
+                <!-- SECTION 3 -->
+                <div class="guide-card">
+                    <h3>3. Monthly Subscriptions & Messaging Privileges</h3>
+                    <p>To unlock your favorite creators' universes and chat directly with them, you can activate a monthly subscription. <strong>Messaging and interaction privileges scale based on your chosen tier:</strong></p>
+                    <ul>
+                        <li><strong>Starter ($50 / month):</strong> Your entry pass to unlock the private feed and follow daily core content.</li>
+                        <li><strong>Advance ($150 / month):</strong> Access to high-privacy multimedia sets with a dedicated messaging channel and priority delivery.</li>
+                        <li><strong>Elite ($300 / month):</strong> Exclusive early previews and high-priority chat channels to communicate directly with the star.</li>
+                        <li><strong>VIP ($500 / month):</strong> The pinnacle of the NGS experience: top-tier status, absolute response priority in messaging, and exclusive reserved perks.</li>
+                    </ul>
+                </div>
+
+                <!-- SECTION 4 -->
+                <div class="guide-card">
+                    <h3>4. Real-Time Status Indicators (Online / Offline)</h3>
+                    <p>On your personal bacheca (where you saved your 50 favorite stars), you can track creator statuses in real time via dedicated neon indicators:</p>
+                    <div class="status-example">
+                        <div class="status-tag online"><span class="dot"></span> ONLINE</div>
+                        <div class="status-tag offline"><span class="dot"></span> OFFLINE</div>
+                    </div>
+                    <p><strong>How to interact:</strong> When a creator is <strong>Online</strong>, you can chat in real time (depending on your subscription tier) and immediately coordinate details for video calls or interactions. When they are <strong>Offline</strong>, you can still send messages, which will be answered as soon as the creator logs back in.</p>
+                </div>
+
+                <!-- SECTION 5 -->
+                <div class="guide-card">
+                    <h3>5. Exclusive Galleries, Locked Media & Pay-Per-View (PPV)</h3>
+                    <p>Creators constantly publish exclusive multimedia content. Across the feeds, you will encounter <strong>private photos and videos that are completely blurred and locked</strong>:</p>
+                    <ul>
+                        <li><strong>If you hold a higher-tier subscription (e.g., Elite or VIP):</strong> Many of these exclusive contents are automatically unlocked or included directly in your package.</li>
+                        <li><strong>If you hold a base or lower tier:</strong> Blurred private photos and videos require a choice. <strong>The creator decides the price</strong> to unlock that specific content. You can either <strong>wait</strong> for the creator to unlock it for free over time, or <strong>pay the exact price set by the creator</strong> to instantly reveal and view the private photo or video.</li>
+                    </ul>
+                </div>
+
+                <!-- SECTION 6 -->
+                <div class="guide-card">
+                    <h3>6. Ultimate Discretion & Security via Stripe</h3>
+                    <p>Your peace of mind is protected by top-tier security standards. All transactions, subscriptions, and PPV unlocks are handled securely and discreetly through <strong>Stripe's</strong> global infrastructure, ensuring banking-grade encryption and complete shielding of your financial details on your bank statements (zero explicit or compromising descriptions).</p>
+                </div>
+
+                <!-- SECTION 7 -->
+                <div class="guide-card">
+                    <h3>7. Private 1-on-1 Video Calls</h3>
+                    <p>If you do not hold a monthly subscription and desire a spot experience, you can book an exclusive <strong>1-on-1 Private Video Call</strong> priced at <strong>$200 per hour</strong>.</p>
+                    <p>You coordinate directly with the creator to schedule the day and time; once everything is agreed upon, you can lock in and confirm your booking through the integrated calendar, running on a secure, encrypted line equipped with native anti-screenshot and anti-recording protection for total privacy.</p>
+                </div>
+
+            </div>
+
+            <!-- CTA SECTION -->
+            <div class="cta-box">
+                <h2>Enter the Elite</h2>
+                <p>Stop watching from the sidelines. Select your favorite stars, break down the screen barrier, and connect directly with the stars of the new generation.</p>
+                <a href="iscrizione-follower.html" class="btn-action">Enter NGS Club</a>
+            </div>
+
+            <footer>
+                <p>&copy; 2026 NGS (New Generation Stars). All Rights Reserved. Private & Encrypted Club Access.</p>
+            </footer>
+
+        </div>
+    </div>
+</body>
+</html>
