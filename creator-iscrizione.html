@@ -1,3 +1,5 @@
+
+        
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +23,6 @@
         }
 
         body {
-            /* Sfondo sfumato rosso glamour da VIP Club */
             background: radial-gradient(circle at 50% 30%, #660019 0%, #2b000b 50%, #080103 100%);
             background-attachment: fixed;
             color: #ffffff;
@@ -35,11 +36,6 @@
             overflow-x: hidden;
         }
 
-        /* =========================================================
-           --- CONTORNO SCHERMO LED BIANCO (SINISTRA E DESTRA) ---
-           ========================================================= */
-        
-        /* Striscia LED Bianco Neon Bordo Sinistro */
         .edge-led-left {
             position: fixed;
             top: 0;
@@ -56,7 +52,6 @@
             pointer-events: none;
         }
 
-        /* Striscia LED Bianco Neon Bordo Destro */
         .edge-led-right {
             position: fixed;
             top: 0;
@@ -73,7 +68,6 @@
             pointer-events: none;
         }
 
-        /* Proiezione del Bagliore Bianco dal bordo Sinistro verso il Centro */
         .edge-glow-projection-left {
             position: fixed;
             top: 0;
@@ -85,7 +79,6 @@
             z-index: 0;
         }
 
-        /* Proiezione del Bagliore Bianco dal bordo Destro verso il Centro */
         .edge-glow-projection-right {
             position: fixed;
             top: 0;
@@ -97,9 +90,6 @@
             z-index: 0;
         }
 
-        /* =========================================================
-           --- SFERE ROSSE IN MOVIMENTO ---
-           ========================================================= */
         @keyframes laserSweepLeft {
             0% { left: -30%; opacity: 0.2; }
             50% { left: 30%; opacity: 0.95; }
@@ -136,7 +126,6 @@
             animation: laserSweepRight 6s ease-in-out infinite;
         }
 
-        /* Ambient Light centrale */
         .ambient-light-center {
             position: fixed;
             top: 50%;
@@ -150,7 +139,6 @@
             z-index: 0;
         }
 
-        /* --- SCHEDA PRINCIPALE CON BORDO LED ROSSO --- */
         .form-card {
             position: relative;
             z-index: 1;
@@ -159,7 +147,6 @@
             background: var(--card-bg);
             backdrop-filter: blur(35px);
             -webkit-backdrop-filter: blur(35px);
-            
             border: 2px solid var(--neon-red);
             border-radius: 28px;
             padding: 55px 45px;
@@ -170,7 +157,6 @@
                 0 30px 90px rgba(0, 0, 0, 0.95);
         }
 
-        /* Back Button */
         .back-nav {
             display: inline-flex;
             align-items: center;
@@ -191,7 +177,6 @@
             transform: translateX(-5px);
         }
 
-        /* Header Titoli */
         .header-box {
             text-align: center;
             margin-bottom: 45px;
@@ -225,7 +210,6 @@
             margin: 0 auto;
         }
 
-        /* Sezioni con linea LED */
         .section-header {
             font-size: 1.1rem;
             text-transform: uppercase;
@@ -247,7 +231,6 @@
             box-shadow: 0 0 12px var(--neon-red);
         }
 
-        /* --- RIQUADRI DI INPUT FLUORESCENTI AL LED ROSSO --- */
         .form-group {
             margin-bottom: 24px;
         }
@@ -267,14 +250,12 @@
             width: 100%;
             padding: 18px 22px;
             background: rgba(25, 2, 8, 0.9);
-            
             border: 2px solid #ff1a4d;
             border-radius: 16px;
             color: #ffffff;
             font-size: 0.98rem;
             font-weight: 600;
             font-family: var(--font-main);
-            
             box-shadow: 
                 0 0 20px rgba(255, 0, 51, 0.7),
                 0 0 35px rgba(255, 0, 51, 0.4),
@@ -282,7 +263,6 @@
             transition: all 0.3s ease;
         }
 
-        /* SCRITTE INTERNE CHIARISSIME E BIANCHE */
         .input-field::placeholder {
             color: rgba(255, 255, 255, 0.95) !important;
             font-weight: 500;
@@ -308,7 +288,6 @@
             color: #ffffff;
         }
 
-        /* --- STRIPE BOX FLUORESCENTE --- */
         .stripe-card-box {
             background: linear-gradient(145deg, rgba(40, 2, 12, 0.9), rgba(15, 0, 4, 0.95));
             border: 2px solid #ff1a4d;
@@ -369,7 +348,6 @@
             text-shadow: 0 0 10px var(--neon-pink);
         }
 
-        /* Checkbox */
         .checkbox-container {
             display: flex;
             align-items: flex-start;
@@ -392,7 +370,6 @@
             line-height: 1.5;
         }
 
-        /* Pulsante LED Gigante */
         .btn-submit {
             width: 100%;
             background: linear-gradient(135deg, #ff0033 0%, #99001f 100%);
@@ -437,18 +414,15 @@
 </head>
 <body>
 
-    <!-- Contorno LED Bianco e Proiezione di Luce ai lati dello schermo -->
     <div class="edge-led-left"></div>
     <div class="edge-led-right"></div>
     <div class="edge-glow-projection-left"></div>
     <div class="edge-glow-projection-right"></div>
 
-    <!-- Sfere Rosse Laser in Movimento (Sfondo) -->
     <div class="laser-beam-left"></div>
     <div class="laser-beam-right"></div>
     <div class="ambient-light-center"></div>
 
-    <!-- Scheda del Form Creator -->
     <div class="form-card">
         <a href="creator-guida.html" class="back-nav">&larr; Back to Guide</a>
 
@@ -520,5 +494,38 @@
         </footer>
     </div>
 
+    <!-- LOGICA MATEMATICA DI RIPARTIZIONE RICAVI Nelle Fasce Progressive -->
+    <script>
+        function calcolaRipartizioneRicaviNGS(importoTotale, postiVenduti) {
+            let percentualeCreator;
+            
+            // 1. Fasce progressive di guadagno per la creator
+            if (postiVenduti <= 4800) {
+                percentualeCreator = 0.70; // 70% alla creator
+            } else if (postiVenduti <= 4900) {
+                percentualeCreator = 0.725; // 72,5% alla creator
+            } else {
+                percentualeCreator = 0.75; // 75% alla creator
+            }
+
+            let quotaCreator = importoTotale * percentualeCreator;
+            let margineTotalePiattaforma = importoTotale - quotaCreator; // Il residuo (es. 30%, 27.5%, 25%)
+
+            // 2. La tua quota fissa (Ivan Crivellaro): 15% base + 1% royalty calcolata sul totale dei volumi/piattaforma
+            let quotaIvanBase = importoTotale * 0.15;
+            let royaltyIvan = importoTotale * 0.01;
+            let quotaIvanTotale = quotaIvanBase + royaltyIvan; // Corrisponde al 16% complessivo sul volume totale
+
+            // 3. Quota residua per NGS (si riduce man mano che la creator sale di fascia)
+            let quotaNGS = margineTotalePiattaforma - quotaIvanTotale;
+            if (quotaNGS < 0) quotaNGS = 0; // Sicurezza per evitare valori negativi
+
+            return {
+                creator: quotaCreator.toFixed(2),
+                ivanCrivellaro: quotaIvanTotale.toFixed(2), // 15% + 1% royalty
+                ngsPlatform: quotaNGS.toFixed(2)
+            };
+        }
+    </script>
 </body>
-</html>
+</html>     
