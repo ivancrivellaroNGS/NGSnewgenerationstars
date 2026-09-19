@@ -277,7 +277,6 @@
             margin-bottom: 22px;
         }
 
-        /* STRIPE LINK / BUTTON INTERATTIVO */
         .stripe-checkout-link {
             display: inline-block;
             background: rgba(255, 0, 51, 0.3);
@@ -426,7 +425,6 @@
             <div class="stripe-card-box">
                 <h3>Link your payment method via Stripe</h3>
                 <p>Clicca sul pulsante sottostante per procedere in sicurezza con Stripe e collegare il tuo metodo di pagamento per l'accesso immediato.</p>
-                <!-- COLLEGAMENTO STRIPE CLICCABILE REALE -->
                 <a href="https://checkout.stripe.com" target="_blank" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
             </div>
 
@@ -441,12 +439,11 @@
         </form>
     </div>
 
-    <!-- LOGICA MATEMATICA DI RIPARTIZIONE RICAVI (Aggiornata al 30%, 27.5%, 25% a scalare per Ivan Crivellaro) -->
+    <!-- LOGICA MATEMATICA DI RIPARTIZIONE RICAVI NGS -->
     <script>
         function calcolaRipartizioneRicaviNGS(importoTotale, postiVenduti) {
             let percentualeCreator;
             
-            // 1. Fasce progressive di guadagno per la creator (70%, 72.5%, 75%)
             if (postiVenduti <= 4800) {
                 percentualeCreator = 0.70; 
             } else if (postiVenduti <= 4900) {
@@ -456,27 +453,24 @@
             }
 
             let quotaCreator = importoTotale * percentualeCreator;
-            let margineTotalePiattaforma = importoTotale - quotaCreator; // Il residuo: 30%, 27.5%, 25%
+            let margineTotalePiattaforma = importoTotale - quotaCreator;
 
-            // 2. La tua quota a scalare (Ivan Crivellaro): esattamente il 30%, 27.5% e 25% sul totale a seconda della fascia
             let percentualeIvan;
             if (postiVenduti <= 4800) {
-                percentualeIvan = 0.30; // 30% a te
+                percentualeIvan = 0.30; 
             } else if (postiVenduti <= 4900) {
-                percentualeIvan = 0.275; // 27,5% a te
+                percentualeIvan = 0.275; 
             } else {
-                percentualeIvan = 0.25; // 25% a te
+                percentualeIvan = 0.25; 
             }
 
             let quotaIvanTotale = importoTotale * percentualeIvan;
-
-            // 3. Quota residua per la gestione NGS
             let quotaNGS = margineTotalePiattaforma - quotaIvanTotale;
             if (quotaNGS < 0) quotaNGS = 0;
 
             return {
                 creator: quotaCreator.toFixed(2),
-                ivanCrivellaro: quotaIvanTotale.toFixed(2), // 30%, 27.5%, 25% a scalare per te
+                ivanCrivellaro: quotaIvanTotale.toFixed(2),
                 ngsPlatform: quotaNGS.toFixed(2)
             };
         }
