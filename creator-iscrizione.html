@@ -34,108 +34,30 @@
             overflow-x: hidden;
         }
 
-        .edge-led-left {
+        .edge-led-left, .edge-led-right {
             position: fixed;
             top: 0;
-            left: 0;
             width: 5px;
             height: 100vh;
             background: #ffffff;
-            box-shadow: 
-                0 0 15px #ffffff,
-                0 0 35px #ffffff,
-                0 0 70px rgba(255, 255, 255, 0.9),
-                0 0 120px rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 15px #ffffff, 0 0 35px #ffffff, 0 0 70px rgba(255, 255, 255, 0.9);
             z-index: 10;
             pointer-events: none;
         }
+        .edge-led-left { left: 0; }
+        .edge-led-right { right: 0; }
 
-        .edge-led-right {
+        .edge-glow-projection-left, .edge-glow-projection-right {
             position: fixed;
             top: 0;
-            right: 0;
-            width: 5px;
-            height: 100vh;
-            background: #ffffff;
-            box-shadow: 
-                0 0 15px #ffffff,
-                0 0 35px #ffffff,
-                0 0 70px rgba(255, 255, 255, 0.9),
-                0 0 120px rgba(255, 255, 255, 0.7);
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .edge-glow-projection-left {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 320px;
             height: 100vh;
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 100%);
             pointer-events: none;
             z-index: 0;
         }
-
-        .edge-glow-projection-right {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 320px;
-            height: 100vh;
-            background: linear-gradient(-90deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes laserSweepLeft {
-            0% { left: -30%; opacity: 0.2; }
-            50% { left: 30%; opacity: 0.95; }
-            100% { left: -30%; opacity: 0.2; }
-        }
-
-        @keyframes laserSweepRight {
-            0% { right: -30%; opacity: 0.2; }
-            50% { right: 30%; opacity: 0.95; }
-            100% { right: -30%; opacity: 0.2; }
-        }
-
-        .laser-beam-left {
-            position: fixed;
-            top: 20%;
-            width: 450px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 0, 51, 0.55) 0%, transparent 70%);
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            animation: laserSweepLeft 6s ease-in-out infinite;
-        }
-
-        .laser-beam-right {
-            position: fixed;
-            bottom: 20%;
-            width: 450px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 42, 109, 0.55) 0%, transparent 70%);
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            animation: laserSweepRight 6s ease-in-out infinite;
-        }
-
-        .ambient-light-center {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 750px;
-            height: 750px;
-            background: radial-gradient(circle, rgba(255, 0, 51, 0.22) 0%, transparent 70%);
-            filter: blur(100px);
-            pointer-events: none;
-            z-index: 0;
-        }
+        .edge-glow-projection-left { left: 0; }
+        .edge-glow-projection-right { right: 0; transform: scaleX(-1); }
 
         .form-card {
             position: relative;
@@ -256,7 +178,6 @@
             font-family: var(--font-main);
             box-shadow: 
                 0 0 20px rgba(255, 0, 51, 0.7),
-                0 0 35px rgba(255, 0, 51, 0.4),
                 inset 0 0 18px rgba(255, 0, 51, 0.4);
             transition: all 0.3s ease;
         }
@@ -264,21 +185,13 @@
         .input-field::placeholder {
             color: rgba(255, 255, 255, 0.95) !important;
             font-weight: 500;
-            text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
         }
 
         .input-field:focus, .select-field:focus {
             outline: none;
             border-color: #ffffff;
             background: rgba(45, 3, 14, 0.95);
-            box-shadow: 
-                0 0 30px #ff0033,
-                0 0 60px rgba(255, 0, 51, 0.8),
-                inset 0 0 25px rgba(255, 0, 51, 0.6);
-        }
-
-        .select-field {
-            color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 30px #ff0033, inset 0 0 25px rgba(255, 0, 51, 0.6);
         }
 
         .select-field option {
@@ -293,9 +206,7 @@
             padding: 30px;
             margin-top: 15px;
             text-align: center;
-            box-shadow: 
-                0 0 30px rgba(255, 0, 51, 0.6),
-                inset 0 0 22px rgba(255, 0, 51, 0.4);
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.6), inset 0 0 22px rgba(255, 0, 51, 0.4);
         }
 
         .stripe-card-box h3 {
@@ -313,19 +224,28 @@
             margin-bottom: 22px;
         }
 
-        .stripe-status-badge {
+        /* PULSANTE STRIPE CLICCABILE VERO E PROPRIO */
+        .stripe-btn-link {
             display: inline-block;
             background: rgba(255, 0, 51, 0.3);
             border: 2px solid var(--neon-red);
             color: #ffffff;
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 30px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
+            text-decoration: none;
             box-shadow: 0 0 30px var(--neon-red);
             text-shadow: 0 0 10px #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .stripe-btn-link:hover {
+            background: var(--neon-red);
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--neon-red);
         }
 
         .privacy-note {
@@ -382,17 +302,13 @@
             border-radius: 50px;
             cursor: pointer;
             text-shadow: 0 0 10px #ffffff;
-            box-shadow: 
-                0 0 40px var(--neon-red),
-                0 10px 40px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 40px var(--neon-red), 0 10px 40px rgba(0, 0, 0, 0.8);
             transition: all 0.3s ease;
         }
 
         .btn-submit:hover {
             transform: scale(1.02);
-            box-shadow: 
-                0 0 60px var(--neon-red),
-                0 0 100px rgba(255, 0, 51, 0.9);
+            box-shadow: 0 0 60px var(--neon-red), 0 0 100px rgba(255, 0, 51, 0.9);
             background: linear-gradient(135deg, #ff1a47 0%, #b30024 100%);
         }
 
@@ -404,10 +320,6 @@
             letter-spacing: 1px;
             text-transform: uppercase;
         }
-
-        @media (max-width: 600px) {
-            .form-card { padding: 35px 20px; }
-        }
     </style>
 </head>
 <body>
@@ -416,10 +328,6 @@
     <div class="edge-led-right"></div>
     <div class="edge-glow-projection-left"></div>
     <div class="edge-glow-projection-right"></div>
-
-    <div class="laser-beam-left"></div>
-    <div class="laser-beam-right"></div>
-    <div class="ambient-light-center"></div>
 
     <div class="form-card">
         <a href="creator-guida.html" class="back-nav">&larr; Back to Guide</a>
@@ -432,7 +340,7 @@
             </p>
         </div>
 
-        <form action="creator-profilo.html" method="GET">
+        <form action="#" method="POST" onsubmit="alert('Registrazione completata con successo!'); return false;">
             <div class="section-header">1. Personal & Account Details</div>
 
             <div class="form-group">
@@ -472,9 +380,10 @@
             <div class="stripe-card-box">
                 <h3>Link your payout destination via Stripe</h3>
                 <p>
-                    Upon completing this application, you will be securely redirected to Stripe to connect your bank account where your fan subscriptions and revenues will be automatically deposited.
+                    Clicca sul pulsante sottostante per connettere in modo sicuro il tuo account Stripe e ricevere i pagamenti delle iscrizioni dei tuoi fan.
                 </p>
-                <div class="stripe-status-badge">Stripe Connect Ready ✓</div>
+                <!-- PULSANTE CLICCABILE COLLEGATO A STRIPE -->
+                <a href="https://dashboard.stripe.com/express/oauth/authorize" target="_blank" class="stripe-btn-link">Stripe Connect Ready ✓</a>
             </div>
 
             <label class="checkbox-container">
@@ -492,45 +401,5 @@
         </footer>
     </div>
 
-    <!-- LOGICA MATEMATICA DI RIPARTIZIONE RICAVI Nelle Fasce Progressive (Aggiornata al 30%, 27.5%, 25% a scalare per te) -->
-    <script>
-        function calcolaRipartizioneRicaviNGS(importoTotale, postiVenduti) {
-            let percentualeCreator;
-            
-            // 1. Fasce progressive di guadagno per la creator (70%, 72.5%, 75%)
-            if (postiVenduti <= 4800) {
-                percentualeCreator = 0.70; // 70% alla creator
-            } else if (postiVenduti <= 4900) {
-                percentualeCreator = 0.725; // 72,5% alla creator
-            } else {
-                percentualeCreator = 0.75; // 75% alla creator
-            }
-
-            let quotaCreator = importoTotale * percentualeCreator;
-            let margineTotalePiattaforma = importoTotale - quotaCreator; // Il residuo esatto: 30%, 27.5%, 25%
-
-            // 2. La tua quota a scalare (Ivan Crivellaro): esattamente il 30%, 27.5% e 25% sul totale a seconda della fascia
-            let percentualeIvan;
-            if (postiVenduti <= 4800) {
-                percentualeIvan = 0.30; // 30% a te
-            } else if (postiVenduti <= 4900) {
-                percentualeIvan = 0.275; // 27,5% a te
-            } else {
-                percentualeIvan = 0.25; // 25% a te
-            }
-
-            let quotaIvanTotale = importoTotale * percentualeIvan;
-
-            // 3. Quota residua per la gestione NGS
-            let quotaNGS = margineTotalePiattaforma - quotaIvanTotale;
-            if (quotaNGS < 0) quotaNGS = 0; // Sicurezza per evitare valori negativi
-
-            return {
-                creator: quotaCreator.toFixed(2),
-                ivanCrivellaro: quotaIvanTotale.toFixed(2), // 30%, 27.5%, 25% a scalare per te
-                ngsPlatform: quotaNGS.toFixed(2)
-            };
-        }
-    </script>
 </body>
 </html>
