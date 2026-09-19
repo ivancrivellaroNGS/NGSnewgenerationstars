@@ -388,7 +388,7 @@
             <div class="brand-subtitle">New Generation Stars</div>
             <h1 class="main-title">Follower Application</h1>
             <p class="header-desc">
-                Secure your identity, set up your discreet payment method, and request access to the exclusive NGS experience.
+                Registra la tua identità e collega il tuo metodo di pagamento su Stripe in modo sicuro, senza alcun vincolo di abbonamento immediato.
             </p>
         </div>
 
@@ -423,18 +423,18 @@
                 </select>
             </div>
 
-            <div class="section-header">2. Secure Billing & Payments (Stripe)</div>
+            <div class="section-header">2. Stripe Account Registration</div>
 
             <p class="privacy-note">
-                NGS partners with <strong>Stripe</strong> to guarantee secure, encrypted, and instant global transactions. All your subscriptions and content unlocks are processed with a <strong>100% neutral and discreet descriptor</strong> on your bank statement to protect your absolute privacy.
+                NGS utilizza <strong>Stripe</strong> per registrare e salvare in sicurezza i tuoi dati di pagamento. Nessun importo ti verrà addebitato ora: potrai decidere liberamente di attivare l'abbonamento in qualsiasi momento direttamente dal tuo profilo.
             </p>
 
             <div class="stripe-card-box">
-                <h3>Connect your payment method with Stripe</h3>
-                <p>Click the button below to securely proceed with Stripe and link your payment method for immediate access.</p>
-                <!-- Collegamento diretto alla pagina di checkout Stripe ufficiale -->
-                <a href="https://buy.stripe.com/test_6oU00k4l92RJeCX3OxgA807" target="_blank" id="stripeLink" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
-                <div id="paymentStatus" class="payment-status">Status: Pending Stripe Verification</div>
+                <h3>Collegamento Metodo di Pagamento</h3>
+                <p>Clicca sul pulsante per registrarti su Stripe e collegare la tua carta. Zero abbonamenti immediati.</p>
+                <!-- Collegamento diretto alla pagina di registrazione Stripe -->
+                <a href="https://buy.stripe.com/test_6oU00k4l92RJeCX3OxgA807" target="_blank" id="stripeLink" class="stripe-checkout-link">Registrati su Stripe &rarr;</a>
+                <div id="paymentStatus" class="payment-status">Status: Registrazione Stripe in attesa</div>
             </div>
 
             <label class="checkbox-container">
@@ -458,7 +458,7 @@
             paymentCompleted = true;
             localStorage.setItem('ngs_stripe_verified', 'true');
             setTimeout(() => {
-                paymentStatus.textContent = "Status: Payment Method Connected (Verified via Stripe)";
+                paymentStatus.textContent = "Status: Utente registrato su Stripe (Verificato)";
                 paymentStatus.style.color = "#00ff66";
             }, 1000);
         });
@@ -467,7 +467,7 @@
             const isVerified = localStorage.getItem('ngs_stripe_verified') === 'true' || paymentCompleted;
             if (!isVerified) {
                 e.preventDefault();
-                alert('Please complete the Stripe secure checkout process before submitting your registration.');
+                alert('Completa prima la registrazione del metodo di pagamento su Stripe.');
                 stripeLink.focus();
             }
         });
