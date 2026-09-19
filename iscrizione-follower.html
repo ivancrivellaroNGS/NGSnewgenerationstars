@@ -426,13 +426,13 @@
             <div class="section-header">2. Stripe Account Registration</div>
 
             <p class="privacy-note">
-                NGS utilizza <strong>Stripe</strong> per registrare e salvare in sicurezza i tuoi dati di pagamento. Nessun importo ti verrà addebitato ora: potrai decidere liberamente di attivare l'abbonamento in qualsiasi momento direttamente dal tuo profilo.
+                NGS utilizza <strong>Stripe</strong> esclusivamente per registrare e salvare in sicurezza i tuoi dati di pagamento. Nessun importo ti verrà addebitato: il pulsante serve solo a collegare il tuo profilo e i tuoi dati bancari a Stripe per futuri abbonamenti.
             </p>
 
             <div class="stripe-card-box">
                 <h3>Collegamento Metodo di Pagamento</h3>
-                <p>Clicca sul pulsante per registrarti su Stripe e collegare la tua carta. Zero abbonamenti immediati.</p>
-                <!-- Collegamento diretto alla pagina di registrazione Stripe -->
+                <p>Clicca sul pulsante per registrarti su Stripe e associare il tuo metodo di pagamento.</p>
+                <!-- Sostituire con il link Stripe configurato per la registrazione/setup del metodo -->
                 <a href="https://buy.stripe.com/test_6oU00k4l92RJeCX3OxgA807" target="_blank" id="stripeLink" class="stripe-checkout-link">Registrati su Stripe &rarr;</a>
                 <div id="paymentStatus" class="payment-status">Status: Registrazione Stripe in attesa</div>
             </div>
@@ -448,7 +448,6 @@
         </form>
     </div>
 
-    <!-- NGS Revenue Distribution & Stripe Flow Logic -->
     <script>
         const stripeLink = document.getElementById('stripeLink');
         const paymentStatus = document.getElementById('paymentStatus');
