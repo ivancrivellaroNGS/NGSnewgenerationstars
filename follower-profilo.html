@@ -209,6 +209,8 @@
             text-transform: uppercase;
             cursor: pointer;
             text-align: center;
+            text-decoration: none;
+            display: inline-block;
         }
         .tier-subscribe-btn:hover { background: #cc0029; box-shadow: 0 0 6px #ff0033; }
 
@@ -255,6 +257,9 @@
             cursor: pointer;
             box-shadow: 0 0 8px rgba(255,0,51,0.4);
             width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
         .call-action-btn:hover { background: #cc0029; box-shadow: 0 0 12px #ff0033; }
 
@@ -352,6 +357,8 @@
             font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
         .stripe-pay-btn:hover { background: #cc0029; box-shadow: 0 0 6px #ff0033; }
 
@@ -421,6 +428,7 @@
                                 <li>Unlimited priority direct messaging &amp; chat access</li>
                                 <li>Free access to all hidden locked media folders &amp; custom requests</li>
                             </ul>
+                            <!-- Link 500$: https://buy.stripe.com/test_cNicN6bNB0JB8ez98RgA804 -->
                             <a href="https://buy.stripe.com/test_cNicN6bNB0JB8ez98RgA804" class="tier-subscribe-btn" target="_blank">Subscribe $500 via Stripe</a>
                         </div>
                         <div class="tier-card-item">
@@ -432,7 +440,8 @@
                                 <li>High-priority direct messaging stream with creators</li>
                                 <li>Access to premium locked galleries and special media updates</li>
                             </ul>
-                    <a href="https://buy.stripe.com/test_bJe00k7xlcsjamH0ClgA803" class="tier-subscribe-btn" target="_blank">Subscribe $300 via Stripe</a>
+                            <!-- Link 300$: https://buy.stripe.com/test_bJe00k7xlcsjamH0ClgA803 -->
+                            <a href="https://buy.stripe.com/test_bJe00k7xlcsjamH0ClgA803" class="tier-subscribe-btn" target="_blank">Subscribe $300 via Stripe</a>
                         </div>
                         <div class="tier-card-item">
                             <div class="tier-header-row">
@@ -443,6 +452,7 @@
                                 <li>Standard direct messaging channel with creator updates</li>
                                 <li>Access to standard subscriber photo and video albums</li>
                             </ul>
+                            <!-- Link 150$: https://buy.stripe.com/test_bJe14odVJ63VgL52KtgA802 -->
                             <a href="https://buy.stripe.com/test_bJe14odVJ63VgL52KtgA802" class="tier-subscribe-btn" target="_blank">Subscribe $150 via Stripe</a>
                         </div>
                         <div class="tier-card-item">
@@ -454,7 +464,8 @@
                                 <li>Basic community updates and entry-level message access</li>
                                 <li>Viewing rights for public preview media feeds</li>
                             </ul>
-                           <a href="https://buy.stripe.com/test_4gM7sM4199g72Ufdp7gA800" class="tier-subscribe-btn" target="_blank">Subscribe $50 via Stripe</a>
+                            <!-- Link 50$: https://buy.stripe.com/test_9B63cwdVJeAr9iD1GpgA801 -->
+                            <a href="https://buy.stripe.com/test_9B63cwdVJeAr9iD1GpgA801" class="tier-subscribe-btn" target="_blank">Subscribe $50 via Stripe</a>
                         </div>
                     </div>
                 </div>
@@ -476,8 +487,8 @@
                     <!-- Non-Subscriber One-to-One Video Call ($200) -->
                     <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
                         <div class="section-title" style="margin-bottom: 6px;">Non-Subscriber Video Call One-to-One</div>
-                        <button class="call-action-btn" onclick="window.location.href='https://buy.stripe.com/test_28EbJ29FtakbeCX1GpgA805'">Book One-to-One Video Call ($200)</button>
-                        <button class="call-action-btn" onclick="bookNonSubscriberCall()">Book One-to-One Video Call ($200)</button>
+                        <!-- Link 200$ Video Call: https://buy.stripe.com/test_28EbJ29FtakbeCX1GpgA805 -->
+                        <a href="https://buy.stripe.com/test_28EbJ29FtakbeCX1GpgA805" target="_blank" class="call-action-btn">Book One-to-One Video Call ($200)</a>
                     </div>
                 </div>
             </div>
@@ -512,22 +523,22 @@
                     <div class="folder-card">
                         <div class="folder-thumb">LOCKED FOLDER</div>
                         <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <button class="stripe-pay-btn" onclick="payWithStripe('Folder 1', 0)">Pay with Stripe</button>
+                        <a href="https://buy.stripe.com/test_9B63cwdVJeAr9iD1GpgA801" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
                     </div>
                     <div class="folder-card">
                         <div class="folder-thumb">LOCKED FOLDER</div>
                         <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <button class="stripe-pay-btn" onclick="payWithStripe('Folder 2', 0)">Pay with Stripe</button>
+                        <a href="https://buy.stripe.com/test_bJe14odVJ63VgL52KtgA802" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
                     </div>
                     <div class="folder-card">
                         <div class="folder-thumb">LOCKED FOLDER</div>
                         <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <button class="stripe-pay-btn" onclick="payWithStripe('Folder 3', 0)">Pay with Stripe</button>
+                        <a href="https://buy.stripe.com/test_bJe00k7xlcsjamH0ClgA803" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
                     </div>
                     <div class="folder-card">
                         <div class="folder-thumb">LOCKED FOLDER</div>
                         <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <button class="stripe-pay-btn" onclick="payWithStripe('Folder 4', 0)">Pay with Stripe</button>
+                        <a href="https://buy.stripe.com/test_cNicN6bNB0JB8ez98RgA804" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
                     </div>
                 </div>
             </div>
@@ -597,10 +608,6 @@
             }
         }
 
-        function subscribeTier(tierName, price) {
-            alert(`Redirecting to Stripe Secure Gateway to subscribe to ${tierName} ($${price})...`);
-        }
-
         // Videochiamata abbonati con timer di 1 ora (3600 secondi) che si chiude automaticamente a zero
         let callInterval = null;
         function startCallSession() {
@@ -626,15 +633,6 @@
                     alert("Session time expired (1 hour reached). Video call closed automatically.");
                 }
             }, 1000);
-        }
-
-        // Videochiamata Non-Abbonati a $200 con Stripe
-        function bookNonSubscriberCall() {
-            alert("Stripe Checkout initialized for Non-Subscriber One-to-One Video Call ($200.00). Redirecting securely...");
-        }
-
-        function payWithStripe(folderName, amount) {
-            alert(`Redirecting to Stripe Secure Gateway for ${folderName}...`);
         }
     </script>
 </body>
