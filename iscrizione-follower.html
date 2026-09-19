@@ -431,5 +431,45 @@
         </form>
     </div>
 
+    <!-- LOGICA MATEMATICA DI RIPARTIZIONE RICAVI (Aggiornata al 30%, 27.5%, 25% a scalare per Ivan Crivellaro) -->
+    <script>
+        function calcolaRipartizioneRicaviNGS(importoTotale, postiVenduti) {
+            let percentualeCreator;
+            
+            // 1. Fasce progressive di guadagno per la creator (70%, 72.5%, 75%)
+            if (postiVenduti <= 4800) {
+                percentualeCreator = 0.70; 
+            } else if (postiVenduti <= 4900) {
+                percentualeCreator = 0.725; 
+            } else {
+                percentualeCreator = 0.75; 
+            }
+
+            let quotaCreator = importoTotale * percentualeCreator;
+            let margineTotalePiattaforma = importoTotale - quotaCreator; // Il residuo: 30%, 27.5%, 25%
+
+            // 2. La tua quota a scalare (Ivan Crivellaro): esattamente il 30%, 27.5% e 25% sul totale a seconda della fascia
+            let percentualeIvan;
+            if (postiVenduti <= 4800) {
+                percentualeIvan = 0.30; // 30% a te
+            } else if (postiVenduti <= 4900) {
+                percentualeIvan = 0.275; // 27,5% a te
+            } else {
+                percentualeIvan = 0.25; // 25% a te
+            }
+
+            let quotaIvanTotale = importoTotale * percentualeIvan;
+
+            // 3. Quota residua per la gestione NGS
+            let quotaNGS = margineTotalePiattaforma - quotaIvanTotale;
+            if (quotaNGS < 0) quotaNGS = 0;
+
+            return {
+                creator: quotaCreator.toFixed(2),
+                ivanCrivellaro: quotaIvanTotale.toFixed(2), // 30%, 27.5%, 25% a scalare per te
+                ngsPlatform: quotaNGS.toFixed(2)
+            };
+        }
+    </script>
 </body>
 </html>
