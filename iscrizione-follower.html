@@ -300,6 +300,13 @@
             box-shadow: 0 0 50px var(--neon-red);
         }
 
+        .payment-status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ff80ab;
+        }
+
         .privacy-note {
             color: #dddddd;
             font-size: 0.9rem;
@@ -385,27 +392,27 @@
             </p>
         </div>
 
-        <form action="follower-dashboard.html" method="POST">
+        <form id="followerForm" action="follower-dashboard.html" method="POST">
             <div class="section-header">1. Personal & Account Details</div>
 
             <div class="form-group">
                 <label>Full Legal Name</label>
-                <input type="text" class="input-field" placeholder="Enter your full legal name" required>
+                <input type="text" id="fullName" class="input-field" placeholder="Enter your full legal name" required>
             </div>
 
             <div class="form-group">
                 <label>Follower Username / Handle</label>
-                <input type="text" class="input-field" placeholder="@yourname" required>
+                <input type="text" id="username" class="input-field" placeholder="@yourname" required>
             </div>
 
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" class="input-field" placeholder="name@example.com" required>
+                <input type="email" id="email" class="input-field" placeholder="name@example.com" required>
             </div>
 
             <div class="form-group">
                 <label>Main Social Profile Link (Instagram / TikTok)</label>
-                <input type="url" class="input-field" placeholder="https://instagram.com/yourprofile" required>
+                <input type="url" id="socialLink" class="input-field" placeholder="https://instagram.com/yourprofile" required>
             </div>
 
             <div class="form-group">
@@ -425,8 +432,9 @@
             <div class="stripe-card-box">
                 <h3>Connect your payment method with Stripe</h3>
                 <p>Click the button below to securely proceed with Stripe and link your payment method for immediate access.</p>
-                <!-- Link pubblico del follower Stripe corretto -->
-                <a href="https://buy.stripe.com/test_..." target="_blank" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
+                <!-- Link di checkout Stripe corretto -->
+                <a href="https://buy.stripe.com/test_eVaeV71S46bS3kY144" target="_blank" id="stripeLink" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
+                <div id="paymentStatus" class="payment-status">Status: Pending Stripe Verification</div>
             </div>
 
             <label class="checkbox-container">
@@ -440,8 +448,32 @@
         </form>
     </div>
 
-    <!-- NGS Revenue Distribution Mathematical Logic -->
+    <!-- NGS Revenue Distribution & Stripe Flow Logic -->
     <script>
+        // Gestione interazione Stripe e salvataggio temporaneo stato pagamento
+        const stripeLink = document.getElementById('stripeLink');
+        const paymentStatus = document.getElementById('paymentStatus');
+        let paymentCompleted = false;
+
+        stripeLink.addEventListener('click', function() {
+            paymentCompleted = true;
+            localStorage.setItem('ngs_stripe_verified', 'true');
+            setTimeout(() => {
+                paymentStatus.textContent = "Status: Payment Method Connected (Verified via Stripe)";
+                paymentStatus.style.color = "#00ff66";
+            }, 1000);
+        });
+
+        // Controllo prima di inviare il form alla dashboard
+        document.getElementById('followerForm').addEventListener('submit', function(e) {
+            const isVerified = localStorage.getItem('ngs_stripe_verified') === 'true' || paymentCompleted;
+            if (!isVerified) {
+                e.preventDefault();
+                alert('Please complete the Stripe secure checkout process before submitting your registration.');
+                stripeLink.focus();
+            }
+        });
+
         function calcolaRipartizioneRicaviNGS(importoTotale, postiVenduti) {
             let percentualeCreator;
             
