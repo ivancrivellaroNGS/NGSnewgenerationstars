@@ -432,8 +432,8 @@
             <div class="stripe-card-box">
                 <h3>Connect your payment method with Stripe</h3>
                 <p>Click the button below to securely proceed with Stripe and link your payment method for immediate access.</p>
-                <!-- Link di checkout Stripe corretto -->
-                <a href="https://buy.stripe.com/test_eVaeV71S46bS3kY144" target="_blank" id="stripeLink" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
+                <!-- Collegamento diretto alla pagina di checkout Stripe ufficiale -->
+                <a href="https://buy.stripe.com/test_6oU00k4l92RJeCX3OxgA807" target="_blank" id="stripeLink" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
                 <div id="paymentStatus" class="payment-status">Status: Pending Stripe Verification</div>
             </div>
 
@@ -450,7 +450,6 @@
 
     <!-- NGS Revenue Distribution & Stripe Flow Logic -->
     <script>
-        // Gestione interazione Stripe e salvataggio temporaneo stato pagamento
         const stripeLink = document.getElementById('stripeLink');
         const paymentStatus = document.getElementById('paymentStatus');
         let paymentCompleted = false;
@@ -464,7 +463,6 @@
             }, 1000);
         });
 
-        // Controllo prima di inviare il form alla dashboard
         document.getElementById('followerForm').addEventListener('submit', function(e) {
             const isVerified = localStorage.getItem('ngs_stripe_verified') === 'true' || paymentCompleted;
             if (!isVerified) {
