@@ -277,19 +277,28 @@
             margin-bottom: 22px;
         }
 
-        .stripe-status-badge {
+        /* STRIPE LINK / BUTTON INTERATTIVO */
+        .stripe-checkout-link {
             display: inline-block;
             background: rgba(255, 0, 51, 0.3);
             border: 2px solid var(--neon-red);
             color: #ffffff;
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 30px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
+            text-decoration: none;
             box-shadow: 0 0 30px var(--neon-red);
             text-shadow: 0 0 10px #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .stripe-checkout-link:hover {
+            background: var(--neon-red);
+            transform: scale(1.05);
+            box-shadow: 0 0 50px var(--neon-red);
         }
 
         .privacy-note {
@@ -416,8 +425,9 @@
 
             <div class="stripe-card-box">
                 <h3>Link your payment method via Stripe</h3>
-                <p>Upon completing this application, you will be securely redirected to Stripe to connect your payment card or billing method for automated subscription access.</p>
-                <div class="stripe-status-badge">STRIPE READY ✓</div>
+                <p>Clicca sul pulsante sottostante per procedere in sicurezza con Stripe e collegare il tuo metodo di pagamento per l'accesso immediato.</p>
+                <!-- COLLEGAMENTO STRIPE CLICCABILE REALE -->
+                <a href="https://checkout.stripe.com" target="_blank" class="stripe-checkout-link">Stripe Secure Checkout &rarr;</a>
             </div>
 
             <label class="checkbox-container">
