@@ -224,7 +224,7 @@
             margin-bottom: 22px;
         }
 
-        /* PULSANTE STRIPE CLICCABILE VERO E PROPRIO */
+        /* PULSANTE STRIPE CLICCABILE VERO E PROPRIO CON CLIENT ID CORRETTO */
         .stripe-btn-link {
             display: inline-block;
             background: rgba(255, 0, 51, 0.3);
@@ -334,7 +334,7 @@
 
         <div class="header-box">
             <div class="brand-subtitle">New Generation Stars</div>
-            <h1 class="main-title">Creator Application</h1>
+            <main class="main-title">Creator Application</main>
             <p class="header-desc">
                 Secure your identity, set up your secure payout destination, and request access to the 5,000 exclusive NGS creator slots.
             </p>
@@ -382,8 +382,8 @@
                 <p>
                     Clicca sul pulsante sottostante per connettere in modo sicuro il tuo account Stripe e ricevere i pagamenti delle iscrizioni dei tuoi fan.
                 </p>
-                <!-- PULSANTE CLICCABILE COLLEGATO A STRIPE -->
-                <a href="https://dashboard.stripe.com/express/oauth/authorize" target="_blank" class="stripe-btn-link">Stripe Connect Ready ✓</a>
+                <!-- PULSANTE CLICCABILE CORRETTO CON OAUTH CONNECT E IL CLIENT ID -->
+                <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_VHHIIBkfEEHX16bA3c8zwpzZsnlTz2zj&scope=read_write" target="_blank" class="stripe-btn-link">Stripe Connect Ready ✓</a>
             </div>
 
             <label class="checkbox-container">
