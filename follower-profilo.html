@@ -1,641 +1,352 @@
-<!DOCTYPE html>
-<html lang="en">
+/**
+ * ============================================================================
+ * SERVER UNICO INTEGRATO: Dashboard Creator/Follower + Stripe Connect V2
+ * ============================================================================
+ */
+
+const express = require('express');
+const Stripe = require('stripe');
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ==========================================
+// CONFIGURAZIONE STRIPE
+// ==========================================
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_KEY_HERE';
+const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_YOUR_WEBHOOK_SECRET';
+
+if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_YOUR_KEY_HERE') {
+  console.warn('⚠️ Attenzione: Chiave Stripe non configurata. Imposta la variabile d\'ambiente STRIPE_SECRET_KEY.');
+}
+
+const stripeClient = new Stripe(STRIPE_SECRET_KEY);
+
+// Database in-memoria per la gestione locale
+const db = {
+  connectedAccounts: new Map(), // userId -> Stripe Account ID
+  products: []                  // Prodotti salvati
+};
+
+// ==========================================
+// API BACKEND STRIPE
+// ==========================================
+
+app.post('/api/create-account', async (req, res) => {
+  try {
+    const { userId, displayName, contactEmail } = req.body;
+    const account = await stripeClient.v2.core.accounts.create({
+      display_name: displayName || 'Creator Profile',
+      contact_email: contactEmail || 'creator@example.com',
+      identity: { country: 'us' },
+      dashboard: 'express',
+      defaults: {
+        responsibilities: { fees_collector: 'application', losses_collector: 'application' }
+      },
+      configuration: {
+        recipient: {
+          capabilities: { stripe_balance: { stripe_transfers: { requested: true } } }
+        }
+      }
+    });
+    db.connectedAccounts.set(userId, account.id);
+    res.json({ success: true, accountId: account.id });
+  } catch (error) {
+    console.error('Errore account:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/create-account-link', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const accountLink = await stripeClient.v2.core.accountLinks.create({
+      account: accountId,
+      use_case: {
+        type: 'account_onboarding',
+        account_onboarding: {
+          configurations: ['recipient'],
+          refresh_url: `http://localhost:4280/?accountId=${accountId}`,
+          return_url: `http://localhost:4280/?accountId=${accountId}&onboarded=true`,
+        },
+      },
+    });
+    res.json({ url: accountLink.url });
+  } catch (error) {
+    console.error('Errore link:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/create-product', async (req, res) => {
+  try {
+    const { name, description, unitAmount, currency, connectedAccountId } = req.body;
+    const product = await stripeClient.products.create({
+      name,
+      description,
+      default_price_data: { unit_amount: parseInt(unitAmount, 10), currency: currency || 'usd' },
+    });
+    const productRecord = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      priceId: product.default_price,
+      unitAmount,
+      currency: currency || 'usd',
+      connectedAccountId,
+    };
+    db.products.push(productRecord);
+    res.json({ success: true, product: productRecord });
+  } catch (error) {
+    console.error('Errore prodotto:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/storefront-data', (req, res) => {
+  const accountsList = Array.from(db.connectedAccounts.entries()).map(([userId, accountId]) => ({ userId, accountId }));
+  res.json({ products: db.products, connectedAccounts: accountsList });
+});
+
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    const { priceId, connectedAccountId } = req.body;
+    const session = await stripeClient.checkout.sessions.create({
+      line_items: [{ price: priceId, quantity: 1 }],
+      payment_intent_data: {
+        application_fee_amount: 150, // Trattenuta piattaforma ($1.50)
+        transfer_data: { destination: connectedAccountId },
+      },
+      mode: 'payment',
+      success_url: `http://localhost:4280/?success=true`,
+      cancel_url: `http://localhost:4280/?canceled=true`,
+    });
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Errore checkout:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// FRONTEND INTEGRATO (HTML / CSS / JS)
+// ==========================================
+app.get('/', (req, res) => {
+  res.send(`<!DOCTYPE html>
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NGS Follower / User Hub</title>
+    <title>Creator Hub & Stripe Connect Unificato</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: radial-gradient(circle at 50% 20%, #730019 0%, #38000a 40%, #120002 100%);
-            color: #ffffff; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --border-color: #1e293b;
+            --accent-color: #dc2626;
+            --accent-hover: #b91c1c;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
             padding: 20px;
-            min-height: 100vh;
         }
-        /* MAIN GRID LAYOUT: CONTENT + RIGHT ADS SIDEBAR */
-        .page-layout-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 20px;
-            align-items: start;
-            max-width: 1650px;
-            margin: 0 auto;
-        }
-        @media (max-width: 1200px) {
-            .page-layout-wrapper { grid-template-columns: 1fr; }
-        }
-
-        .container { max-width: 1400px; margin: 0; width: 100%; }
-
+        .container { max-width: 1200px; margin: 0 auto; }
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border: 1px solid #ff0033;
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #3d000a 0%, #140003 100%);
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.3);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;
         }
-        h1 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px #ff0033;
+        .badge { background: #166534; color: #bbf7d0; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+        h2 { margin-top: 0; color: var(--text-main); font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        label { display: block; font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+        input, select {
+            width: 100%; padding: 10px; margin-top: 5px; background-color: #0f172a;
+            border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); box-sizing: border-box;
         }
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #240005;
-            border: 1px solid #ff0033;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
+        button {
+            background-color: var(--accent-color); color: white; border: none;
+            padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px;
         }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #00ff66;
-            border-radius: 50%;
-            box-shadow: 0 0 6px #00ff66;
-        }
-        .status-indicator.offline .status-dot {
-            background-color: #ff0033;
-            box-shadow: 0 0 6px #ff0033;
-        }
-        .back-btn {
-            background: #240005;
-            border: 1px solid #ff0033;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-        .back-btn:hover { background: #ff0033; box-shadow: 0 0 10px #ff0033; }
-
-        .card {
-            background: linear-gradient(180deg, #330009 0%, #120002 100%);
-            border: 1px solid #ff0033;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 12px rgba(255, 0, 51, 0.2);
-        }
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: #ff3355;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(255, 0, 51, 0.4);
-        }
-
-        /* SIDEBAR SPONSORED ADS */
-        .ads-side-column {
-            background: linear-gradient(180deg, #330009 0%, #120002 100%);
-            border: 1px solid #ff0033;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 0 12px rgba(255, 0, 51, 0.2);
-            position: sticky;
-            top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .ads-side-title {
-            font-size: 0.75rem;
-            font-weight: 900;
-            color: #ff99b3;
-            text-transform: uppercase;
-            text-align: center;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255,0,51,0.3);
-            padding-bottom: 6px;
-        }
-        .ad-slot-box {
-            height: 480px;
-            background: #1c0004;
-            border: 1px dashed #ff0033;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        .ad-scroll-track {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            animation: bannerScroll 12s infinite ease-in-out;
-        }
-        .ad-single-banner {
-            min-height: 100%;
-            width: 100%;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            background: #240005;
-        }
-        .ad-single-banner h4 { font-size: 0.85rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .ad-single-banner p { font-size: 0.7rem; color: #ff99b3; line-height: 1.3; }
-        .ad-banner-link {
-            background: #ff0033;
-            color: #fff;
-            border: none;
-            padding: 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            width: 100%;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .ad-banner-link:hover { background: #cc0029; box-shadow: 0 0 6px #ff0033; }
-
-        @keyframes bannerScroll {
-            0%, 30% { transform: translateY(0%); }
-            35%, 65% { transform: translateY(-100%); }
-            70%, 100% { transform: translateY(-200%); }
-        }
-
-        .top-split-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        @media (max-width: 1000px) { .top-split-grid { grid-template-columns: 1fr; } }
-
-        /* SUBSCRIPTION TIERS */
-        .tiers-container { display: flex; flex-direction: column; gap: 10px; }
-        .tier-card-item {
-            background: #240005;
-            border: 1px solid #ff0033;
-            border-radius: 8px;
-            padding: 10px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            box-shadow: inset 0 0 8px rgba(255,0,51,0.15);
-        }
-        .tier-header-row { display: flex; justify-content: space-between; align-items: center; }
-        .tier-title-name { font-size: 0.8rem; color: #fff; font-weight: 800; text-transform: uppercase; }
-        .tier-price-tag { font-size: 0.9rem; font-weight: 900; color: #ff3355; text-shadow: 0 0 5px rgba(255,0,51,0.4); }
-        .tier-permissions-list { font-size: 0.68rem; color: #ff99b3; line-height: 1.3; padding-left: 14px; margin-bottom: 4px; }
-        .tier-subscribe-btn {
-            background: #ff0033;
-            color: #fff;
-            border: none;
-            padding: 5px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .tier-subscribe-btn:hover { background: #cc0029; box-shadow: 0 0 6px #ff0033; }
-
-        /* VIDEO CALL & TIMER SECTIONS */
-        .video-call-panel {
-            background: #240005;
-            border: 1px solid #ff0033;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-            text-align: center;
-        }
-        .video-screen-mock {
-            width: 100%;
-            height: 120px;
-            background: #1c0004;
-            border: 1px solid #ff0033;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .countdown-timer {
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: #00ff66;
-            text-shadow: 0 0 8px rgba(0,255,102,0.5);
-            letter-spacing: 2px;
-        }
-        .call-action-btn {
-            background: #ff0033;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 0 8px rgba(255,0,51,0.4);
-            width: 100%;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .call-action-btn:hover { background: #cc0029; box-shadow: 0 0 12px #ff0033; }
-
-        /* TOP 50 CREATOR WATCHLIST */
-        .fav-creators-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 320px;
-            overflow-y: auto;
-            background: #1c0004;
-            border: 1px solid #ff0033;
-            border-radius: 6px;
-            padding: 10px;
-            scrollbar-width: thin;
-            scrollbar-color: #ff0033 #1c0004;
-        }
-        .fav-creators-list::-webkit-scrollbar { width: 6px; }
-        .fav-creators-list::-webkit-scrollbar-thumb { background: #ff0033; border-radius: 3px; }
-
-        .fav-creator-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #240005;
-            border: 1px solid rgba(255,0,51,0.4);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #fff;
-        }
-        .creator-info-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .creator-slot-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #520010;
-            border: 1px solid #ff0033;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 900;
-            color: #ff99b3;
-            text-transform: uppercase;
-        }
-        .fav-creator-item input[type="checkbox"] {
-            accent-color: #ff0033;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* LOCKED MEDIA FOLDERS & STRIPE CHECKOUT */
-        .media-folders-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        @media (max-width: 1000px) { .media-folders-grid { grid-template-columns: repeat(2, 1fr); } }
-
-        .folder-card {
-            background: #3b000b;
-            border: 1px solid #ff0033;
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            text-align: center;
-        }
-        .folder-thumb {
-            height: 100px;
-            background: #520010;
-            border: 1px solid #ff0033;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 0.8rem;
-            color: #ff99b3;
-        }
-        .stripe-pay-btn {
-            background: #ff0033;
-            color: #fff;
-            border: none;
-            padding: 7px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .stripe-pay-btn:hover { background: #cc0029; box-shadow: 0 0 6px #ff0033; }
-
-        /* CHAT HUB */
-        .chat-section-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.6fr;
-            gap: 15px;
-            height: 280px;
-        }
-        @media (max-width: 900px) { .chat-section-grid { grid-template-columns: 1fr; height: auto; } }
-        .chat-threads {
-            background: #1c0004;
-            border: 1px solid #ff0033;
-            border-radius: 6px;
-            padding: 8px;
-            overflow-y: auto;
-        }
-        .chat-thread-box {
-            background: #240005;
-            border: 1px solid rgba(255,0,51,0.5);
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-bottom: 6px;
-            cursor: pointer;
-        }
-        .chat-thread-box:hover { background: #3b000b; border-color: #ff0033; }
-        .chat-box-active {
-            background: #1c0004;
-            border: 1px solid #ff0033;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            justify-content: space-between;
-        }
+        button:hover { background-color: var(--accent-hover); }
+        .watchlist { max-height: 180px; overflow-y: auto; font-size: 13px; }
+        .watchlist-item { padding: 6px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .product-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
     </style>
 </head>
 <body>
-    <div class="page-layout-wrapper">
-        <div class="container">
-            <!-- HEADER -->
-            <header>
-                <h1>NGS Follower / User Hub</h1>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <div class="status-indicator" id="statusIndicator" onclick="toggleStatus()">
-                        <div class="status-dot" id="statusDot"></div>
-                        <span id="statusText">ONLINE</span>
-                    </div>
-                    <a href="#" class="back-btn">&larr; BACK</a>
-                </div>
-            </header>
+    <div class="container">
+        <header>
+            <h1>🔥 Profilo Follower & Stripe Connect</h1>
+            <div class="badge">SISTEMA ATTIVO</div>
+        </header>
 
-            <!-- TOP GRID: SUBSCRIPTION TIERS & VIDEO CALL BOOKING -->
-            <div class="top-split-grid">
-                <!-- SUBSCRIPTION TIERS -->
-                <div class="card" style="margin-bottom: 0;">
-                    <div class="section-title">Subscription Tiers &amp; Access Rights</div>
-                    <div class="tiers-container">
-                        <!-- VIP Tier ($500) - Live Link 1 -->
-                        <div class="tier-card-item">
-                            <div class="tier-header-row">
-                                <span class="tier-title-name">VIP Tier</span>
-                                <span class="tier-price-tag">$500</span>
-                            </div>
-                            <ul class="tier-permissions-list">
-                                <li>Unlimited priority direct messaging &amp; chat access</li>
-                                <li>Free access to all hidden locked media folders &amp; custom requests</li>
-                            </ul>
-                            <a href="https://buy.stripe.com/9B6cN7fI90PeesK3JPbfO00" class="tier-subscribe-btn" target="_blank">Subscribe $500 via Stripe</a>
-                        </div>
-                        <!-- Profile Elite ($300) - Live Link 2 -->
-                        <div class="tier-card-item">
-                            <div class="tier-header-row">
-                                <span class="tier-title-name">Profile Elite</span>
-                                <span class="tier-price-tag">$300</span>
-                            </div>
-                            <ul class="tier-permissions-list">
-                                <li>High-priority direct messaging stream with creators</li>
-                                <li>Access to premium locked galleries and special media updates</li>
-                            </ul>
-                            <a href="https://buy.stripe.com/fZu8wRfI90Pe5WefsxbfO01" class="tier-subscribe-btn" target="_blank">Subscribe $300 via Stripe</a>
-                        </div>
-                        <!-- Advance Tier ($150) - Live Link 3 -->
-                        <div class="tier-card-item">
-                            <div class="tier-header-row">
-                                <span class="tier-title-name">Advance Tier</span>
-                                <span class="tier-price-tag">$150</span>
-                            </div>
-                            <ul class="tier-permissions-list">
-                                <li>Standard direct messaging channel with creator updates</li>
-                                <li>Access to standard subscriber photo and video albums</li>
-                            </ul>
-                            <a href="https://buy.stripe.com/14A3cxdA1gOcckC3JPbfO02" class="tier-subscribe-btn" target="_blank">Subscribe $150 via Stripe</a>
-                        </div>
-                        <!-- Starter Tier ($50) - Live Link 4 -->
-                        <div class="tier-card-item">
-                            <div class="tier-header-row">
-                                <span class="tier-title-name">Starter Tier</span>
-                                <span class="tier-price-tag">$50</span>
-                            </div>
-                            <ul class="tier-permissions-list">
-                                <li>Basic community updates and entry-level message access</li>
-                                <li>Viewing rights for public preview media feeds</li>
-                            </ul>
-                            <a href="https://buy.stripe.com/3cIcN78fHdC0doG4NTbfO03" class="tier-subscribe-btn" target="_blank">Subscribe $50 via Stripe</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIDEO CALL SECTIONS -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <!-- Subscriber 1-Hour Video Call Session with Auto-Close Timer -->
-                    <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div class="section-title" style="margin-bottom: 6px;">Subscriber Video Call (1 Hour Timer)</div>
-                        <div class="video-call-panel">
-                            <div class="video-screen-mock">
-                                <span style="font-size: 0.65rem; color: #ff99b3; margin-bottom: 3px;">AUTO-CLOSING SESSION TIMER</span>
-                                <div class="countdown-timer" id="countdownTimer">01:00:00</div>
-                            </div>
-                            <button class="call-action-btn" onclick="startCallSession()">Start Subscriber Call Session</button>
-                        </div>
-                    </div>
-
-                    <!-- Non-Subscriber One-to-One Video Call ($200) - Live Link 5 -->
-                    <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div class="section-title" style="margin-bottom: 6px;">Non-Subscriber Video Call One-to-One</div>
-                        <a href="https://buy.stripe.com/aFafZj2VncxW3O6949bfO04" target="_blank" class="call-action-btn">Book One-to-One Video Call ($200)</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TOP 50 CREATOR WATCHLIST -->
+        <div class="grid">
+            <!-- 1. Profilo Follower / Creator Onboarding -->
             <div class="card">
-                <div class="section-title">⭐ Top 50 Creator Watchlist &amp; Preferences</div>
-                <div style="font-size: 0.75rem; color: #ff99b3; margin-bottom: 8px;">Scroll down to view and manage all 50 creator slots with avatar photos and selection toggles.</div>
-                <div class="fav-creators-list">
-                    <script>
-                        for(let i = 1; i <= 50; i++) {
-                            let paddedNum = i < 10 ? '0' + i : i;
-                            document.write(`
-                                <div class="fav-creator-item">
-                                    <div class="creator-info-group">
-                                        <div class="creator-slot-avatar">C${paddedNum}</div>
-                                        <strong>Creator Slot ${paddedNum}</strong>
-                                    </div>
-                                    <input type="checkbox" ${i <= 5 ? 'checked' : ''}>
-                                </div>
-                            `);
-                        }
-                    </script>
-                </div>
+                <h2>1. Profilo Follower & Onboarding Stripe</h2>
+                <form id="onboard-form">
+                    <label>ID Profilo Follower / Utente</label>
+                    <input type="text" id="userId" value="follower_pro_01" required>
+                    <label>Nome Profilo Pubblico</label>
+                    <input type="text" id="displayName" value="Marco Creator" required>
+                    <label>Email Profilo</label>
+                    <input type="email" id="contactEmail" value="marco@followerhub.com" required>
+                    <button type="submit">Collega Account Stripe</button>
+                </form>
             </div>
 
-            <!-- LOCKED MEDIA FOLDERS & STRIPE SECURE PAYMENTS -->
+            <!-- 2. Creazione Prodotto da parte del Profilo -->
             <div class="card">
-                <div class="section-title">🔒 Hidden Media Folders &amp; Secure Checkout (Stripe)</div>
-                <div style="font-size: 0.75rem; color: #ff99b3; margin-bottom: 12px;">Unlock exclusive media content instantly via Stripe secure payment gateway.</div>
-                <div class="media-folders-grid">
-                    <!-- Folder 1 - Live Link 6 -->
-                    <div class="folder-card">
-                        <div class="folder-thumb">LOCKED FOLDER</div>
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <a href="https://buy.stripe.com/aFaeVf9jLdC0ckCfsxbfO05" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
-                    </div>
-                    <!-- Folder 2 - Live Link 7 -->
-                    <div class="folder-card">
-                        <div class="folder-thumb">LOCKED FOLDER</div>
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <a href="https://buy.stripe.com/7sY7sN1Rj1Ti0BU6W1bfO06" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
-                    </div>
-                    <!-- Folder 3 - Live Link 8 -->
-                    <div class="folder-card">
-                        <div class="folder-thumb">LOCKED FOLDER</div>
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <a href="https://buy.stripe.com/14A4gB2Vn9lKckC1BHbfO07" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
-                    </div>
-                    <!-- Folder 4 - Live Link 9 -->
-                    <div class="folder-card">
-                        <div class="folder-thumb">LOCKED FOLDER</div>
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #fff;">Price: [ Custom ]</span>
-                        <a href="https://buy.stripe.com/cNi4gBfI91TickCfsxbfO08" target="_blank" class="stripe-pay-btn">Pay with Stripe</a>
-                    </div>
-                </div>
+                <h2>2. Crea Contenuto / Servizio</h2>
+                <form id="product-form">
+                    <label>Seleziona Account Connesso</label>
+                    <select id="product-account-id" required>
+                        <option value="">Prima collega un account...</option>
+                    </select>
+                    <label>Titolo Servizio / Contenuto</label>
+                    <input type="text" id="productName" value="Videochiamata Esclusiva" required>
+                    <label>Descrizione</label>
+                    <input type="text" id="productDesc" value="Accesso ai contenuti premium del profilo" required>
+                    <label>Prezzo (in centesimi, es. 1500 = $15.00)</label>
+                    <input type="number" id="productPrice" value="1500" required>
+                    <button type="submit">Pubblica sul Marketplace</button>
+                </form>
             </div>
 
-            <!-- MESSAGES & CHAT HUB -->
-            <div class="card" style="margin-bottom: 0;">
-                <div class="section-title">💬 Multi-Message &amp; Creator Chat Stream</div>
-                <div class="chat-section-grid">
-                    <div class="chat-threads">
-                        <div class="chat-thread-box"><strong>Active Conversation</strong><br><span style="color: #ff99b3; font-size: 0.65rem;">Last message preview...</span></div>
-                    </div>
-                    <div class="chat-box-active">
-                        <div style="font-size: 0.75rem; color: #ff99b3; text-align: center; margin: auto;">Select an active conversation to send messages.</div>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" placeholder="Type a message to the creator..." style="flex-grow: 1; background: #240005; border: 1px solid #ff0033; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem; outline: none;">
-                            <button style="background: #ff0033; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">Send</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- 3. Watchlist 50 Creator -->
+            <div class="card">
+                <h2>3. Watchlist 50 Creator</h2>
+                <div class="watchlist" id="watchlist"></div>
             </div>
         </div>
 
-        <!-- RIGHT SIDEBAR: SPONSORED ADS BANNER -->
-        <aside class="ads-side-column">
-            <div class="ads-side-title">Sponsored Ads</div>
-            <div class="ad-slot-box">
-                <div class="ad-scroll-track">
-                    <div class="ad-single-banner">
-                        <div>
-                            <h4>NGS Club Elite</h4>
-                            <p>Exclusive sponsored placement for top users.</p>
-                        </div>
-                        <a href="https://buy.stripe.com/14A8wR9jL8hGckCbchbfO09" class="ad-banner-link" target="_blank">Discover More</a>
-                    </div>
-                    <div class="ad-single-banner">
-                        <div>
-                            <h4>Top Creators 2026</h4>
-                            <p>Promote your profile with automated banner tracks.</p>
-                        </div>
-                        <a href="https://buy.stripe.com/4gM9AV1Rj7dC70igwBbfO0a" class="ad-banner-link" target="_blank">Join Now</a>
-                    </div>
-                    <div class="ad-single-banner">
-                        <div>
-                            <h4>Business Partner</h4>
-                            <p>Real-time dynamic advertisements running live.</p>
-                        </div>
-                        <a href="https://buy.stripe.com/7sY5kFdA1dC0acu1BHbfO0b" class="ad-banner-link" target="_blank">Visit Sponsor</a>
-                    </div>
-                </div>
+        <!-- STOREFRONT ACQUISTI -->
+        <div class="card">
+            <h2>🛒 Storefront & Piu recenti</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Acquista direttamente dai profili connessi con trattenuta automatica.</p>
+            <div id="storefront-products" class="product-grid">
+                <p style="color: var(--text-muted);">Caricamento prodotti...</p>
             </div>
-        </aside>
+        </div>
     </div>
 
     <script>
-        function toggleStatus() {
-            const ind = document.getElementById('statusIndicator');
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-            if(ind.classList.contains('offline')) {
-                ind.classList.remove('offline');
-                dot.style.background = '#00ff66';
-                text.innerText = 'ONLINE';
-            } else {
-                ind.classList.add('offline');
-                dot.style.background = '#ff0033';
-                text.innerText = 'OFFLINE';
-            }
+        // Watchlist Top 50 generator
+        const watchlistEl = document.getElementById('watchlist');
+        for (let i = 1; i <= 50; i++) {
+            watchlistEl.innerHTML += \`<div class="watchlist-item">
+                <span>Creator Seguito #\${i}</span>
+                <input type="checkbox" \${i <= 5 ? 'checked' : ''} style="width: auto;">
+            </div>\`;
         }
 
-        let callInterval = null;
-        function startCallSession() {
-            if (callInterval) clearInterval(callInterval);
-            alert("Subscriber Video Call Session started. 1-hour countdown running...");
-            
-            let timeLeft = 3600;
-            const timerDisplay = document.getElementById('countdownTimer');
-            
-            callInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    let hours = Math.floor(timeLeft / 3600);
-                    let mins = Math.floor((timeLeft % 3600) / 60);
-                    let secs = timeLeft % 60;
-                    timerDisplay.innerText = 
-                        (hours < 10 ? '0' : '') + hours + ':' + 
-                        (mins < 10 ? '0' : '') + mins + ':' + 
-                        (secs < 10 ? '0' : '') + secs;
-                } else {
-                    clearInterval(callInterval);
-                    timerDisplay.innerText = "00:00:00";
-                    alert("Session time expired (1 hour reached). Video call closed automatically.");
-                }
-            }, 1000);
+        // Onboarding submit
+        document.getElementById('onboard-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/create-account', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: document.getElementById('userId').value,
+                    displayName: document.getElementById('displayName').value,
+                    contactEmail: document.getElementById('contactEmail').value
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const linkRes = await fetch('/api/create-account-link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accountId: data.accountId })
+                });
+                const linkData = await linkRes.json();
+                if (linkData.url) window.location.href = linkData.url;
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        });
+
+        // Product creation submit
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch('/api/create-product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    connectedAccountId: document.getElementById('product-account-id').value,
+                    name: document.getElementById('productName').value,
+                    description: document.getElementById('productDesc').value,
+                    unitAmount: document.getElementById('productPrice').value,
+                    currency: 'usd'
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Prodotto pubblicato con successo!');
+                loadStorefront();
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        });
+
+        // Load storefront and accounts
+        async function loadStorefront() {
+            const res = await fetch('/api/storefront-data');
+            const data = await res.json();
+
+            const select = document.getElementById('product-account-id');
+            select.innerHTML = data.connectedAccounts.length ? '' : '<option value="">Nessun account disponibile</option>';
+            data.connectedAccounts.forEach(acc => {
+                const opt = document.createElement('option');
+                opt.value = acc.accountId;
+                opt.textContent = \`Account: \${acc.accountId} (\${acc.userId})\`;
+                select.appendChild(opt);
+            });
+
+            const container = document.getElementById('storefront-products');
+            if (data.products.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Nessun prodotto disponibile.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            data.products.forEach(prod => {
+                container.innerHTML += \`
+                    <div class="product-card">
+                        <h3 style="margin-top:0">\${prod.name}</h3>
+                        <p style="color: var(--text-muted); font-size: 13px;">\${prod.description}</p>
+                        <p style="font-weight: bold;">$\${(prod.unitAmount / 100).toFixed(2)} USD</p>
+                        <button onclick="buy('\${prod.priceId}', '\${prod.connectedAccountId}')">Acquista</button>
+                    </div>
+                \`;
+            });
         }
+
+        async function buy(priceId, connectedAccountId) {
+            const res = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ priceId, connectedAccountId })
+            });
+            const data = await res.json();
+            if (data.url) window.location.href = data.url;
+        }
+
+        loadStorefront();
     </script>
 </body>
-</html>
+</html>`);
+});
+
+const PORT = process.env.PORT || 4280;
+app.listen(PORT, () => {
+  console.log(`🚀 Server unificato avviato con successo su http://localhost:${PORT}`);
+});
