@@ -111,12 +111,23 @@ app.get('/api/storefront-data', (req, res) => {
 
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
-    const { priceId, connectedAccountId } = req.body;
+    const { priceId, connectedAccountId, rank } = req.body;
+    
+    // Percentuali dinamiche basate sulla leaderboard (5,000 posti)
+    let feePercent = 30; // Base: 30% a NGS, 70% al creator
+    const creatorRank = parseInt(rank, 10) || 0;
+
+    if (creatorRank >= 4900 && creatorRank <= 5000) {
+      feePercent = 25; // Top 4.900 - 5.000: 25% a NGS, 75% al creator
+    } else if (creatorRank >= 4800 && creatorRank < 4900) {
+      feePercent = 28; // Fascia 4.800 - 4.900: 28% a NGS, 72% al creator
+    }
+
     const session = await stripeClient.checkout.sessions.create({
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription', // Abbonamento ricorrente attivato
       subscription_data: {
-        application_fee_percent: 25, // Trattenuta automatica del 25% per NGS
+        application_fee_percent: feePercent, // Trattenuta dinamica automatica
         transfer_data: { destination: connectedAccountId },
       },
       success_url: `https://ivancrivellarongs.github.io/newgenerationstars/?success=true`,
@@ -230,8 +241,8 @@ app.get('/', (req, res) => {
 
         <!-- STOREFRONT ACQUISTI -->
         <div class="card">
-            <h2>🛒 Storefront & Piu recenti</h2>
-            <p style="color: var(--text-muted); font-size: 13px;">Acquista direttamente dai profili connessi con trattenuta automatica.</p>
+            <h2>🛒 Storefront & Più recenti</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Acquista direttamente dai profili connessi con trattenuta automatica basata sul rank.</p>
             <div id="storefront-products" class="product-grid">
                 <p style="color: var(--text-muted);">Caricamento prodotti...</p>
             </div>
@@ -245,7 +256,7 @@ app.get('/', (req, res) => {
             watchlistEl.innerHTML += \`<div class="watchlist-item">
                 <span>Creator Seguito #\${i}</span>
                 <input type="checkbox" \${i <= 5 ? 'checked' : ''} style="width: auto;">
-            </div>\`;
+            \`;
         }
 
         // Onboarding submit
@@ -318,23 +329,26 @@ app.get('/', (req, res) => {
             }
 
             container.innerHTML = '';
-            data.products.forEach(prod => {
+            data.products.forEach((prod, index) => {
                 container.innerHTML += \`
                     <div class="product-card">
                         <h3 style="margin-top:0">\${prod.name}</h3>
                         <p style="color: var(--text-muted); font-size: 13px;">\${prod.description}</p>
                         <p style="font-weight: bold;">$\${(prod.unitAmount / 100).toFixed(2)} USD</p>
-                        <button onclick="buy('\${prod.priceId}', '\${prod.connectedAccountId}')">Acquista</button>
+                        <label style="font-size: 11px; margin-top: 8px;">Posizione in Classifica (Rank 1-5000):</label>
+                        <input type="number" id="rank-\${index}" value="4950" min="1" max="5000" style="margin-bottom: 10px;">
+                        <button onclick="buy('\${prod.priceId}', '\${prod.connectedAccountId}', 'rank-\${index}')">Abbonati / Acquista</button>
                     </div>
                 \`;
             });
         }
 
-        async function buy(priceId, connectedAccountId) {
+        async function buy(priceId, connectedAccountId, rankInputId) {
+            const rank = document.getElementById(rankInputId).value;
             const res = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ priceId, connectedAccountId })
+                body: JSON.stringify({ priceId, connectedAccountId, rank })
             });
             const data = await res.json();
             if (data.url) window.location.href = data.url;
