@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/newgenerationstars/">
     <title>NGS — Creator Registration & Stripe Setup</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -89,6 +90,7 @@
             margin-bottom: 35px;
             text-shadow: 0 0 10px rgba(255, 128, 171, 0.6);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .back-nav:hover {
@@ -329,7 +331,7 @@
     <div class="edge-glow-projection-right"></div>
 
     <div class="form-card">
-        <a href="creator-guide.html" class="back-nav">&larr; Back to Guide</a>
+        <a href="#" onclick="history.back(); return false;" class="back-nav">&larr; Back to Guide</a>
 
         <div class="header-box">
             <div class="brand-subtitle">New Generation Stars</div>
