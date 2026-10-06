@@ -33,90 +33,6 @@
             overflow-x: hidden;
         }
 
-        .edge-led-left, .edge-led-right {
-            position: fixed;
-            top: 0;
-            width: 5px;
-            height: 100vh;
-            background: #ffffff;
-            box-shadow: 0 0 15px #ffffff, 0 0 35px #ffffff, 0 0 70px rgba(255, 255, 255, 0.9);
-            z-index: 10;
-            pointer-events: none;
-        }
-        .edge-led-left { left: 0; }
-        .edge-led-right { right: 0; }
-
-        .edge-glow-projection-left {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 320px;
-            height: 100vh;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .edge-glow-projection-right {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 320px;
-            height: 100vh;
-            background: linear-gradient(-90deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes laserSweepLeft {
-            0% { left: -30%; opacity: 0.2; }
-            50% { left: 30%; opacity: 0.95; }
-            100% { left: -30%; opacity: 0.2; }
-        }
-
-        @keyframes laserSweepRight {
-            0% { right: -30%; opacity: 0.2; }
-            50% { right: 30%; opacity: 0.95; }
-            100% { right: -30%; opacity: 0.2; }
-        }
-
-        .laser-beam-left {
-            position: fixed;
-            top: 20%;
-            width: 450px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 0, 51, 0.55) 0%, transparent 70%);
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            animation: laserSweepLeft 6s ease-in-out infinite;
-        }
-
-        .laser-beam-right {
-            position: fixed;
-            bottom: 20%;
-            width: 450px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 42, 109, 0.55) 0%, transparent 70%);
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-            animation: laserSweepRight 6s ease-in-out infinite;
-        }
-
-        .ambient-light-center {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 750px;
-            height: 750px;
-            background: radial-gradient(circle, rgba(255, 0, 51, 0.22) 0%, transparent 70%);
-            filter: blur(100px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
         .form-card {
             position: relative;
             z-index: 1;
@@ -252,21 +168,6 @@
             color: #ffffff;
         }
 
-        .card-box {
-            background: linear-gradient(145deg, rgba(40, 2, 12, 0.9), rgba(15, 0, 4, 0.95));
-            border: 2px solid #ff1a4d;
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 15px;
-            box-shadow: 0 0 30px rgba(255, 0, 51, 0.6), inset 0 0 22px rgba(255, 0, 51, 0.4);
-        }
-
-        .card-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 15px;
-        }
-
         .privacy-note {
             color: #dddddd;
             font-size: 0.9rem;
@@ -274,9 +175,45 @@
             margin-bottom: 20px;
         }
 
-        .privacy-note strong {
+        .card-box {
+            background: linear-gradient(145deg, rgba(40, 2, 12, 0.9), rgba(15, 0, 4, 0.95));
+            border: 2px solid #ff1a4d;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.6), inset 0 0 22px rgba(255, 0, 51, 0.4);
+        }
+
+        .card-box h3 {
             color: #ffffff;
-            text-shadow: 0 0 8px var(--neon-red);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        .card-box p {
+            color: #e6e6f2;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .stripe-badge {
+            display: inline-block;
+            background: rgba(255, 0, 51, 0.2);
+            border: 2px solid var(--neon-red);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.95rem;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
         }
 
         .checkbox-container {
@@ -332,15 +269,6 @@
 </head>
 <body>
 
-    <div class="edge-led-left"></div>
-    <div class="edge-led-right"></div>
-    <div class="edge-glow-projection-left"></div>
-    <div class="edge-glow-projection-right"></div>
-
-    <div class="laser-beam-left"></div>
-    <div class="laser-beam-right"></div>
-    <div class="ambient-light-center"></div>
-
     <div class="form-card">
         <a href="presentazione-follower.html" class="back-nav">&larr; Back to Guide</a>
 
@@ -348,11 +276,11 @@
             <div class="brand-subtitle">New Generation Stars</div>
             <h1 class="main-title">Follower Application</h1>
             <p class="header-desc">
-                Register your details, select your subscription tier, and securely link your payment method.
+                Secure your identity, set up your discreet payment method, and request access to the exclusive NGS experience.
             </p>
         </div>
 
-        <form id="followerForm" action="#" method="POST">
+        <form id="followerForm" action="follower-dashboard.html" method="POST">
             <div class="section-header">1. Personal & Account Details</div>
 
             <div class="form-group">
@@ -383,46 +311,22 @@
                 </select>
             </div>
 
-            <div class="section-header">2. Membership Tier Selection</div>
-
-            <div class="form-group">
-                <label>Select Subscription Tier</label>
-                <select class="select-field" id="subscriptionTier" required>
-                    <option value="" disabled selected>Choose your platform subscription tier</option>
-                    <option value="50">Two Start ($50 / month)</option>
-                    <option value="150">Priority ($150 / month)</option>
-                    <option value="300">Absolute Response / Message Exclusive ($300 / month)</option>
-                    <option value="500">NG Bride / VIP ($500 / month) — Includes max 2 free video calls (1 hour each) per month. Extra calls: $200 each.</option>
-                </select>
-            </div>
-
-            <div class="section-header">3. Payment Method Registration</div>
+            <div class="section-header">2. Secure Billing & Payments (Stripe)</div>
 
             <p class="privacy-note">
-                Your payment method will be securely charged according to your selected subscription tier. <strong>NG Bride / VIP Tier ($500/mo) includes a maximum of 2 free 1-hour video calls per month. Any additional video calls cost $200 per call (1 hour duration each).</strong>
+                NGS partners with Stripe to guarantee secure, encrypted, and instant global transactions. All your subscriptions and content unlocks are processed with a 100% neutral and discreet descriptor on your bank statement to protect your absolute privacy.
             </p>
 
             <div class="card-box">
-                <div class="form-group">
-                    <label>Card Number</label>
-                    <input type="text" id="cardNumber" class="input-field" placeholder="4532 •••• •••• ••••" maxlength="19" required>
-                </div>
-                <div class="card-row">
-                    <div class="form-group">
-                        <label>Expiration (MM/YY)</label>
-                        <input type="text" id="cardExp" class="input-field" placeholder="MM/YY" maxlength="5" required>
-                    </div>
-                    <div class="form-group">
-                        <label>CVV</label>
-                        <input type="password" id="cardCvv" class="input-field" placeholder="123" maxlength="4" required>
-                    </div>
-                </div>
+                <h3>Link your payment method via Stripe</h3>
+                <p>Upon completing this application, you will be securely redirected to Stripe to connect your payment card or billing method for automated subscription access.</p>
+                <div class="stripe-badge">Stripe Ready ✓</div>
             </div>
 
             <label class="checkbox-container">
                 <input type="checkbox" required>
                 <span class="checkbox-label">
-                    I agree to the NGS Closed Club operational guidelines, subscription terms, and the strict zero-screenshot security protocol.
+                    I agree to the NGS Closed Club operational guidelines, the subscription terms, and the strict zero-screenshot security protocol.
                 </span>
             </label>
 
