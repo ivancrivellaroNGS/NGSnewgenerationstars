@@ -348,11 +348,11 @@
             <div class="brand-subtitle">New Generation Stars</div>
             <h1 class="main-title">Follower Application</h1>
             <p class="header-desc">
-                Register your details and securely link your payment method with zero subscriptions, hidden fees, or recurring charges.
+                Register your details, select your subscription tier, and securely link your payment method.
             </p>
         </div>
 
-        <form id="followerForm" action="follower-dashboard.html" method="POST">
+        <form id="followerForm" action="#" method="POST">
             <div class="section-header">1. Personal & Account Details</div>
 
             <div class="form-group">
@@ -383,10 +383,23 @@
                 </select>
             </div>
 
-            <div class="section-header">2. Payment Method Registration</div>
+            <div class="section-header">2. Membership Tier Selection</div>
+
+            <div class="form-group">
+                <label>Select Subscription Tier</label>
+                <select class="select-field" id="subscriptionTier" required>
+                    <option value="" disabled selected>Choose your platform subscription tier</option>
+                    <option value="50">Two Start ($50 / month)</option>
+                    <option value="150">Priority ($150 / month)</option>
+                    <option value="300">Absolute Response / Message Exclusive ($300 / month)</option>
+                    <option value="500">NG Bride / VIP ($500 / month) — Includes max 2 free video calls (1 hour each) per month. Extra calls: $200 each.</option>
+                </select>
+            </div>
+
+            <div class="section-header">3. Payment Method Registration</div>
 
             <p class="privacy-note">
-                Your payment method is securely registered for verification purposes only. <strong>No monthly subscription or automatic fee will ever be charged.</strong>
+                Your payment method will be securely charged according to your selected subscription tier. <strong>NG Bride / VIP Tier ($500/mo) includes a maximum of 2 free 1-hour video calls per month. Any additional video calls cost $200 per call (1 hour duration each).</strong>
             </p>
 
             <div class="card-box">
@@ -409,7 +422,7 @@
             <label class="checkbox-container">
                 <input type="checkbox" required>
                 <span class="checkbox-label">
-                    I agree to the NGS Closed Club operational guidelines and the strict zero-screenshot security protocol.
+                    I agree to the NGS Closed Club operational guidelines, subscription terms, and the strict zero-screenshot security protocol.
                 </span>
             </label>
 
