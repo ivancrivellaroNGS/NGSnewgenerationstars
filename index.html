@@ -8,7 +8,7 @@
   <title>NGS - New Generation Stars</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   
-  <!-- GOOGLE TRANSLATE SCRIPT -->
+  <!-- GOOGLE TRANSLATE SCRIPT CORRETTO -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -17,7 +17,7 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <style>
     * {
@@ -51,7 +51,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* SFONDO CON AURE LED ROSSE POTENTI DAI BORDI VERSO IL CENTRO */
+    /* SFONDO CON AURE LED ROSSE */
     .disco-bg {
       position: fixed;
       width: 100%;
@@ -60,16 +60,13 @@
       left: 0;
       z-index: 1;
       background: 
-        /* LED Rosso da Sinistra verso il centro */
         radial-gradient(ellipse 50% 80% at 0% 50%, rgba(255, 0, 43, 0.85) 0%, rgba(150, 0, 20, 0.4) 40%, transparent 75%),
-        /* LED Rosso da Destra verso il centro */
         radial-gradient(ellipse 50% 80% at 100% 50%, rgba(255, 0, 43, 0.85) 0%, rgba(150, 0, 20, 0.4) 40%, transparent 75%),
-        /* Nucleo centrale scuro per staccare il logo */
         radial-gradient(circle at 50% 50%, rgba(40, 0, 10, 0.5) 0%, transparent 60%);
       filter: blur(30px);
     }
 
-    /* CONTENITORE PALLINI BOKEH LUMINOSI E SPARSI IN MODO CASUALE */
+    /* CONTENITORE PALLINI BOKEH */
     .bokeh-container {
       position: fixed;
       width: 100%;
@@ -87,7 +84,6 @@
       animation: pulseGlow 3s infinite alternate ease-in-out;
     }
 
-    /* EFFETTO LUMINOSITÀ VIVA PER I PALLINI */
     @keyframes pulseGlow {
       0% { opacity: 0.7; transform: scale(0.95); }
       100% { opacity: 1; transform: scale(1.05); filter: brightness(1.4); }
@@ -104,29 +100,23 @@
       margin: auto;
     }
 
-    /* LOGO NGS PULITO, ROSSO PIENO E CENTRATO TRA I LED */
     .title-logo {
       font-family: 'Inter', sans-serif;
-      font-size: 12rem;
+      font-size: 10rem;
       font-weight: 900;
       letter-spacing: 14px;
       padding-left: 14px;
       color: #ff1a3c;
-      background: none;
-      -webkit-background-clip: initial;
-      -webkit-text-fill-color: #ff1a3c;
-      -webkit-text-stroke: 0px;
       text-shadow: 0 0 60px rgba(255, 26, 60, 1), 0 0 20px rgba(255, 26, 60, 0.8);
       margin-bottom: -10px;
       line-height: 0.9;
       text-transform: uppercase;
     }
 
-    /* SUBTITLE */
     .subtitle {
       font-family: 'Inter', sans-serif;
       color: #ffe082;
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       letter-spacing: 6px;
       padding-left: 6px;
@@ -135,21 +125,69 @@
       text-shadow: 0 0 25px rgba(255, 224, 130, 0.9), 2px 2px 4px rgba(0,0,0,0.9);
     }
 
-    /* DESCRIZIONE */
     .description {
       font-family: 'Poppins', sans-serif;
       color: #ffffff;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 400;
       line-height: 1.6;
       margin-bottom: 45px;
       text-shadow: 0 2px 15px rgba(0, 0, 0, 0.95);
     }
 
-    /* PULSANTE DISCOVER THE APP */
     .btn-discover {
       font-family: 'Inter', sans-serif;
       display: inline-block;
-      padding: 24px 62px;
-      font-size: 1.55rem;
+      padding: 20px 50px;
+      font-size: 1.4rem;
       font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(135deg, #ff0033 0%, #99001f 100%);
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .btn-discover:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 50px rgba(255, 0, 51, 1);
+    }
+
+    @media (max-width: 768px) {
+      .title-logo { font-size: 5rem; letter-spacing: 6px; }
+      .subtitle { font-size: 1.3rem; letter-spacing: 3px; }
+      .description { font-size: 1.1rem; }
+      .btn-discover { padding: 16px 36px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TRADUZIONE GOOGLE -->
+  <div class="translate-container">
+    <div id="google_translate_element"></div>
+  </div>
+
+  <!-- SFONDO DISCO & BOKEH -->
+  <div class="disco-bg"></div>
+  <div class="bokeh-container">
+    <div class="dot" style="width: 15px; height: 15px; background: rgba(255,0,51,0.8); top: 20%; left: 15%; shadow: 0 0 10px #ff0033;"></div>
+    <div class="dot" style="width: 25px; height: 25px; background: rgba(255,255,255,0.6); top: 60%; left: 80%;"></div>
+    <div class="dot" style="width: 10px; height: 10px; background: rgba(255,0,51,0.9); top: 75%; left: 25%;"></div>
+  </div>
+
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="hero-card">
+    <h1 class="title-logo">NGS</h1>
+    <h2 class="subtitle">New Generation Stars</h2>
+    <p class="description">
+      La piattaforma per le nuove stelle. Scopri l'app e unisciti alla nostra community.
+    </p>
+    <a href="#" class="btn-discover">Discover the App</a>
+  </main>
+
+</body>
+</html>
