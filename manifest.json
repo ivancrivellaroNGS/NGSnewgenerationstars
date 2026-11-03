@@ -1,43 +1,24 @@
 {
-
   "name": "New Generation Stars",
-
   "short_name": "NGS",
-
-  "start_url": "/",
-
-  "display": "standalone",
-
-  "background_color": "#010002",
-
-  "theme_color": "#010002",
-
-  "icons": [
-
-    {
-
-      "src": "/icon-192.png",
-
-      "sizes": "192x192",
-
-      "type": "image/png"
-
-    },
-
-    {
-
-      "src": "/icon-512.png",
-
-      "sizes": "512x512",
-
-      "type": "image/png"
-
-    }
-
-  ],
-
   "id": "ngs.app",
-
-  "description": "New Generation Stars social network"
-
-} 
+  "description": "New Generation Stars social network",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#010002",
+  "theme_color": "#010002",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
